@@ -23,3 +23,9 @@ https://ryotarch.com/javascript/nodejs/ts-node-dev/
 ## ES6(ES2015)とはなにか
 https://qiita.com/soarflat/items/b251caf9cb59b72beb9b
 普段使っているのがES6=ES2015。
+
+## Expressでの 静的ファイルディレクトリ
+https://expressjs.com/ja/starter/static-files.html
+
+## Node.jsでのフォルダ作成
+https://stackoverflow.com/questions/21194934/how-to-create-a-directory-if-it-doesnt-exist-using-node-js
