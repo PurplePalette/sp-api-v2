@@ -3,8 +3,8 @@
     "start": "ts-node index.ts",
     "dev": "ts-node-dev --respawn index.ts",
     "check-types": "tsc --noEmit",
-    "eslint": "eslint src/**/*.ts",
-    "eslint:fix": "eslint src/**/*.ts --fix",
+    "eslint": "eslint *.ts **/*.ts",
+    "eslint:fix": "eslint *.ts **/*.ts --fix",
     "lint": "npm-run-all eslint check-types"
   },
   "dependencies": {
