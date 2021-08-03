@@ -29,3 +29,7 @@ https://expressjs.com/ja/starter/static-files.html
 
 ## Node.jsでのフォルダ作成
 https://stackoverflow.com/questions/21194934/how-to-create-a-directory-if-it-doesnt-exist-using-node-js
+
+## ESLintの導入
+https://qiita.com/notakaos/items/85fd2f5c549f247585b1
+https://github.com/PurplePalette/sonolus-uploader/blob/main/.eslintrc.js
