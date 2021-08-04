@@ -1,11 +1,10 @@
 import express from 'express'
-import { Sonolus, LocalizationText } from 'sonolus-express'
-import { LevelInfo, InfoDetails, SRL } from 'sonolus-express'
-import { config } from '../config'
+import { Sonolus } from 'sonolus-express'
+import { defaultListHandler, defaultDetailsHandler, InfoDetails } from 'sonolus-express'
+import { CustomLevelInfo, initLevelsDatabase } from './reader'
 
-interface CustomLevelInfo extends LevelInfo {
-  userId: string
-}
+// Load custom levels database
+const levels = initLevelsDatabase()
 
 // Express add/edit/delete level handler
 export const levelsRouter = express.Router()
@@ -23,10 +22,12 @@ export function customLevelListHandler(
   keywords: string | undefined,
   page: number
 ): { pageCount: number, infos: CustomLevelInfo[] } {
-  return {
-    pageCount: 255,
-    infos: []
-  }
+  return defaultListHandler(
+    levels,
+    ['name', 'rating', 'title', 'artists', 'author', 'description'],
+    keywords,
+    page
+  )
 }
 
 // Sonolus-Express level list handler
@@ -34,53 +35,5 @@ export function customLevelDetailsHandler(
   sonolus: Sonolus,
   name: string
 ): InfoDetails<CustomLevelInfo> | undefined {
-  const text : LocalizationText = {
-    ja: 'aaa'
-  }
-  const bgm: SRL<'LevelBgm'> = {
-    type: 'LevelBgm',
-    url: '',
-    hash: ''
-  }
-  const cover: SRL<'LevelCover'> = {
-    type: 'LevelCover',
-    url: '',
-    hash: ''
-  }
-  const data: SRL<'LevelData'> = {
-    type: 'LevelData',
-    url: '',
-    hash: ''
-  }
-  const info: CustomLevelInfo = {
-    version: 1,
-    name: 'a',
-    description: text,
-    title: text,
-    rating: 1,
-    useBackground: {
-      useDefault: true
-    },
-    useEffect: {
-      useDefault: true
-    },
-    useSkin: {
-      useDefault: true
-    },
-    useParticle: {
-      useDefault: true
-    },
-    artists: text,
-    author: text,
-    engine: config.engine,
-    userId: 'hoge',
-    bgm,
-    cover,
-    data,
-  }
-  return {
-    info,
-    description: info.description,
-    recommended: []
-  }
+  return defaultDetailsHandler(levels, name)
 }
