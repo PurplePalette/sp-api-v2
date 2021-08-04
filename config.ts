@@ -50,7 +50,7 @@ export interface GlobalConfig {
 */
 export const config : GlobalConfig = {
   port: 3000,
-  uploads: 'uploads/',
+  uploads: './uploads',
   static: './public',
   packer: './packer',
   engine: 'pjsekai',
