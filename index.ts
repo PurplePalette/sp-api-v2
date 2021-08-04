@@ -1,9 +1,8 @@
 import express from 'express'
-import fs from 'fs'
-import multer from 'multer'
 import { Sonolus } from 'sonolus-express'
 import { config } from './config'
-import { upload } from './potato/upload'
+import { uploadRouter } from './potato/upload'
+import { levelsRouter, customLevelListHandler, customLevelDetailsHandler } from './potato/levels'
 
 /*
  * Sonolus-uploader-core-2 Main class
@@ -14,43 +13,29 @@ import { upload } from './potato/upload'
 
 const app = express()
 
+// Inject uploadRouter
+app.use('/', uploadRouter)
+
+// Inject levelsRouter
+app.use('/levels', levelsRouter)
+
 // Inject sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
+potato.levelListHandler = customLevelListHandler
+potato.levelDetailsHandler = customLevelDetailsHandler
 
 // Add static folder (for use with sonolus-server-landing)
 app.use('/', express.static(config.static))
 
-// Load uploads folder (for use with sonolus-pack)
-if (fs.existsSync(config.uploads)) {
-  try {
-    potato.load(config.uploads)
-  } catch (e) {
-    console.log('Database was not valid...')
-  }
-} else {
-  console.log(`${config.uploads} folder was not exist.`)
-  fs.mkdirSync(config.uploads)
-}
+// Add static folder (for use with upload)
+app.use('/repository/', express.static('./db/levels/'))
 
-// Receive file upload
-app.post('/upload', (req, res) => {
-  upload(req, res, function (err) {
-    // This upload handler needs mimetype and filename
-    // If request from python with just binary, it return success but don't save file.
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      console.log(err)
-      res.status(400)
-      res.send('Requested file was not valid.')
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      res.send(err)
-      res.status(500)
-      res.send('Internal server error. Please try again.')
-    }
-    res.send('File saved.')
-  })
-})
+// Load sonolus-pack folder
+try {
+  potato.load(config.packer)
+} catch (e) {
+  console.log('Sonolus-packer db was not valid!')
+}
 
 // Startup the server
 app.listen(config.port, () => {
