@@ -4,3 +4,4 @@ uploads/*.jpeg
 uploads/*.png
 uploads/*.mp3
 uploads/*.jpg
+packer/*
