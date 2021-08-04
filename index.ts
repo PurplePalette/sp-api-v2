@@ -2,6 +2,7 @@ import express from 'express'
 import { Sonolus } from 'sonolus-express'
 import { config } from './config'
 import { uploadRouter } from './potato/upload'
+import { levelsRouter, customLevelListHandler, customLevelDetailsHandler } from './potato/levels'
 
 /*
  * Sonolus-uploader-core-2 Main class
@@ -12,11 +13,16 @@ import { uploadRouter } from './potato/upload'
 
 const app = express()
 
-// Inject sonolus-express
-const potato = new Sonolus(app, config.sonolusOptions)
-
 // Inject uploadRouter
 app.use('/', uploadRouter)
+
+// Inject levelsRouter
+app.use('/', levelsRouter)
+
+// Inject sonolus-express
+const potato = new Sonolus(app, config.sonolusOptions)
+potato.levelListHandler = customLevelListHandler
+potato.levelDetailsHandler = customLevelDetailsHandler
 
 // Add static folder (for use with sonolus-server-landing)
 app.use('/', express.static(config.static))
