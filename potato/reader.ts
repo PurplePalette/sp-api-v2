@@ -1,20 +1,7 @@
 import fs from 'fs'
 import { gzipSync } from 'zlib'
 import { createHash } from 'crypto'
-import { LevelInfo } from 'sonolus-express'
-
-export interface CustomLevelInfo extends LevelInfo {
-  userId: string,
-  coverHash: string,
-  dataHash: string,
-  bgmHash: string,
-  playCount: number,
-  notes: number,
-  genre: string,
-  createdTime: number,
-  updatedTime: number,
-  public: boolean
-}
+import CustomLevelInfo from '../types/level'
 
 /**
  * Generate SHA1 hash of a file
