@@ -5,3 +5,14 @@ uploads/*.png
 uploads/*.mp3
 uploads/*.jpg
 packer/*
+db/levels/*
+db/users/*
+db/pack/repository
+db/pack/db.json
+db/source/effects/*
+db/source/effects/*
+db/source/engines/*
+db/source/backgrounds/*
+db/source/skins/*
+db/source/particles/*
+!.gitkeep

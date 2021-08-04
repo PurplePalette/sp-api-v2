@@ -52,7 +52,7 @@ export const config : GlobalConfig = {
   port: 3000,
   uploads: './uploads',
   static: './public',
-  packer: './packer',
+  packer: './db/pack',
   engine: 'pjsekai',
   maxSize: 15 * 1024 * 1024,
   sonolusOptions: {
