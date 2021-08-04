@@ -1,0 +1,2087 @@
+openapi: 3.0.0
+info:
+  title: SweetPotato Server API
+  version: '1.0'
+  description: |-
+    Sonolusの基本APIを拡張する感じ。
+    ユーザー認証はFirebaseAuthorizationを通してやる。
+  contact:
+    name: お窓
+    url: 'https://discord.gg/KEfVkfC6Q9'
+  termsOfService: 'https://discord.gg/KEfVkfC6Q9'
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/mit-license.php'
+servers:
+  - url: 'http://localhost:5000'
+    description: Local
+paths:
+  /backgrounds/list:
+    get:
+      summary: Get background list
+      tags:
+        - backgrounds
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundListResponse'
+      operationId: getBackgroundList
+      description: |-
+        It returns list of background infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/backgrounds/{backgroundName}':
+    parameters:
+      - schema:
+          type: string
+        name: backgroundName
+        in: path
+        required: true
+    get:
+      summary: Get background
+      tags:
+        - backgrounds
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundResponse'
+        '404':
+          description: Not Found
+      operationId: getBackground
+      description: |-
+        It returns specified background info
+        It will raise 404 if the background is not registered in this server
+  /effects/list:
+    get:
+      summary: Get effect list
+      tags:
+        - effects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectListResponse'
+      operationId: getEffectList
+      description: |-
+        It returns list of effect infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/effects/{effectName}':
+    parameters:
+      - schema:
+          type: string
+        name: effectName
+        in: path
+        required: true
+    get:
+      summary: Get effect
+      tags:
+        - effects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectResponse'
+        '404':
+          description: Not Found
+      operationId: getEffect
+      description: |-
+        It returns specified effect info
+        It will raise 404 if the effect is not registered in this server
+  /engines/list:
+    get:
+      summary: Get engine list
+      tags:
+        - engines
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineListResponse'
+      operationId: getEngineList
+      description: |-
+        It returns list of engine infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/engines/{engineName}':
+    parameters:
+      - schema:
+          type: string
+        name: engineName
+        in: path
+        required: true
+    get:
+      summary: Get engine
+      tags:
+        - engines
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineResponse'
+        '404':
+          description: Not Found
+      operationId: getEngine
+      description: |-
+        It returns specified engine info
+        It will raise 404 if the engine is not registered in this server
+  /levels/list:
+    get:
+      summary: Get level list
+      tags:
+        - levels
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelListResponse'
+      operationId: getLevelList
+      description: |-
+        It returns list of level infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/levels/{levelName}':
+    parameters:
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get level
+      tags:
+        - levels
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelResponse'
+        '404':
+          description: Not Found
+      operationId: getLevel
+      description: |-
+        It returns specified level info
+        It will raise 404 if the level is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
+    post:
+      summary: Add level
+      operationId: addLevel
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '409':
+          description: Conflict
+      description: 指定された譜面情報をサーバーに登録します
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Level'
+        description: ''
+      tags:
+        - levels
+      security:
+        - Bearer: []
+    patch:
+      summary: Edit level
+      operationId: editLevel
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      description: 指定されたlevelを編集します
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Level'
+      tags:
+        - levels
+      security:
+        - Bearer: []
+  /particles/list:
+    get:
+      summary: Get particle list
+      tags:
+        - particles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleListResponse'
+      operationId: getParticleList
+      description: |-
+        It returns list of particle infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/particles/{particleName}':
+    parameters:
+      - schema:
+          type: string
+        name: particleName
+        in: path
+        required: true
+    get:
+      summary: Get particle
+      tags:
+        - particles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleResponse'
+        '404':
+          description: Not Found
+      operationId: getParticle
+      description: |-
+        It returns specified particle info
+        It will raise 404 if the particle is not registered in this server
+  /skins/list:
+    get:
+      summary: Get skin list
+      tags:
+        - skins
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinListResponse'
+      operationId: getSkinList
+      description: |-
+        It returns list of skin infos registered in this server
+        Also it can search using query params
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+  '/skins/{skinName}':
+    parameters:
+      - schema:
+          type: string
+        name: skinName
+        in: path
+        required: true
+    get:
+      summary: Get skin
+      tags:
+        - skins
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinResponse'
+        '404':
+          description: Not Found
+      operationId: getSkin
+      description: |-
+        It returns specified skin info
+        It will raise 404 if the skin is not registered in this server
+  /info:
+    get:
+      summary: Get server info
+      tags:
+        - info
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerInfo'
+      operationId: getServerInfo
+      description: |-
+        It returns small list of all infos registered in this server
+        (It should be trimed if the server has too many items)
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: Get user
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
+      operationId: getUser
+      description: 指定したユーザー情報を取得します
+    patch:
+      summary: Edit user
+      operationId: editUser
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+        - users
+      description: 指定したuser情報を編集します
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+        - Bearer: []
+  /users/list:
+    get:
+      summary: Get user list
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserListResponse'
+      operationId: getUserList
+      description: サーバーに登録されたユーザー一覧を返します
+  '/tests/{testId}/info':
+    get:
+      summary: Get user server info
+      tags:
+        - tests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerInfo'
+      operationId: getTestServerInfo
+      description: テスト個別の情報一覧を返します
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/backgrounds/list':
+    get:
+      summary: Get backgrounds for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundListResponse'
+      operationId: getTestsBackgrounds
+      description: 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/backgrounds/{backgroundName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: backgroundName
+        in: path
+        required: true
+    get:
+      summary: Get testing background
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundResponse'
+        '404':
+          description: Not Found
+      operationId: getBackgroundTest
+      description: |-
+        It returns specified background info
+        It will raise 404 if the background is not registered in this server
+      tags:
+        - tests
+  '/tests/{testId}/effects/list':
+    get:
+      summary: Get effects for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectListResponse'
+      operationId: getTestsEffects
+      description: 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/effects/{effectName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: effectName
+        in: path
+        required: true
+    get:
+      summary: Get testing effect
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectResponse'
+        '404':
+          description: Not Found
+      operationId: getEffectTest
+      description: |-
+        It returns specified effect info
+        It will raise 404 if the effect is not registered in this server
+      tags:
+        - tests
+  '/tests/{testId}/engines/list':
+    get:
+      summary: Get engines for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineListResponse'
+      operationId: getTestsEngines
+      description: 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/engines/{engineName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: engineName
+        in: path
+        required: true
+    get:
+      summary: Get testing engine
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineResponse'
+        '404':
+          description: Not Found
+      operationId: getEngineTest
+      description: |-
+        It returns specified engine info
+        It will raise 404 if the engine is not registered in this server
+      tags:
+        - tests
+  '/tests/{testId}/levels/list':
+    get:
+      summary: Get levels for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelListResponse'
+      operationId: getTestsLevels
+      description: 譜面テスト用エンドポイント/ 背景一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/levels/{levelName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get testing level
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelResponse'
+        '404':
+          description: Not Found
+      operationId: getLevelTest
+      description: |-
+        It returns specified level info
+        It will raise 404 if the level is not registered in this server
+      tags:
+        - tests
+  '/tests/{testId}/particles/list':
+    get:
+      summary: Get particles for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleListResponse'
+      operationId: getTestsParticles
+      description: 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/particles/{particleName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: particleName
+        in: path
+        required: true
+    get:
+      summary: Get testing particle
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleResponse'
+        '404':
+          description: Not Found
+      operationId: getParticleTest
+      description: |-
+        It returns specified particle info
+        It will raise 404 if the particle is not registered in this server
+      tags:
+        - tests
+  '/tests/{testId}/skins/list':
+    get:
+      summary: Get skins for test
+      tags:
+        - tests
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinListResponse'
+      operationId: getTestsSkins
+      description: 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+  '/tests/{testId}/skins/{skinName}':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: skinName
+        in: path
+        required: true
+    get:
+      summary: Get testing skin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinResponse'
+        '404':
+          description: Not Found
+      operationId: getSkinTest
+      description: |-
+        It returns specified skin info
+        It will raise 404 if the skin is not registered in this server
+      tags:
+        - tests
+  '/users/{userId}/info':
+    get:
+      summary: Get user server info
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerInfo'
+      operationId: getUserServerInfo
+      description: ユーザー個別の情報一覧を返します
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/backgrounds/list':
+    get:
+      summary: Get backgrounds for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundListResponse'
+      operationId: getUsersBackgrounds
+      description: ユーザー個別用エンドポイント/ 背景一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/backgrounds/{backgroundName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: backgroundName
+        in: path
+        required: true
+    get:
+      summary: Get users background
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBackgroundResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersBackground
+      description: |-
+        It returns specified background info
+        It will raise 404 if the background is not registered in this server
+      tags:
+        - users
+  '/users/{userId}/effects/list':
+    get:
+      summary: Get effects for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectListResponse'
+      operationId: getUsersEffects
+      description: ユーザー個別用エンドポイント/ エフェクト一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/effects/{effectName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: effectName
+        in: path
+        required: true
+    get:
+      summary: Get users effect
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEffectResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersEffect
+      description: |-
+        It returns specified effect info
+        It will raise 404 if the effect is not registered in this server
+      tags:
+        - users
+  '/users/{userId}/engines/list':
+    get:
+      summary: Get engines for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineListResponse'
+      operationId: getUsersEngines
+      description: ユーザー個別用エンドポイント/ エンジン一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/engines/{engineName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: engineName
+        in: path
+        required: true
+    get:
+      summary: Get users engine
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEngineResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersEngine
+      description: |-
+        It returns specified engine info
+        It will raise 404 if the engine is not registered in this server
+      tags:
+        - users
+  '/users/{userId}/levels/list':
+    get:
+      summary: Get levels for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelListResponse'
+      operationId: getUsersLevels
+      description: ユーザー個別用エンドポイント/ 背景一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/levels/{levelName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get users level
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLevelResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersLevel
+      description: |-
+        It returns specified level info
+        It will raise 404 if the level is not registered in this server
+      tags:
+        - users
+  '/users/{userId}/particles/list':
+    get:
+      summary: Get particles for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleListResponse'
+      operationId: getUsersParticles
+      description: ユーザー個別用エンドポイント/ パーティクル一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/particles/{particleName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: particleName
+        in: path
+        required: true
+    get:
+      summary: Get users particle
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticleResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersParticle
+      description: |-
+        It returns specified particle info
+        It will raise 404 if the particle is not registered in this server
+      tags:
+        - users
+  '/users/{userId}/skins/list':
+    get:
+      summary: Get skins for test
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/keywords'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinListResponse'
+      operationId: getUsersSkins
+      description: ユーザー個別用エンドポイント/ スキン一覧を返す
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+  '/users/{userId}/skins/{skinName}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: skinName
+        in: path
+        required: true
+    get:
+      summary: Get users skin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSkinResponse'
+        '404':
+          description: Not Found
+      operationId: getUsersSkin
+      description: |-
+        It returns specified skin info
+        It will raise 404 if the skin is not registered in this server
+      tags:
+        - users
+  /upload:
+    post:
+      summary: Upload file
+      operationId: uploadFile
+      responses:
+        '200':
+          description: OK
+      tags:
+        - uploads
+      description: 独自要素
+components:
+  schemas:
+    Level:
+      description: |-
+        A level provides a list of entities and powered by scripted behavior in engine, with skin, effect, background and particle, to create gameplay experience for players / It defines level for actual user play. It includes all data to play one level.
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Level
+      type: object
+      x-examples:
+        example-1:
+          value:
+            name: h0GeHOGE
+            version: 1
+            rating: 1
+            engine: string
+            title: string
+            artists: string
+            author: string
+            cover: 'http://example.com/'
+            bgm: 'http://example.com/'
+            data: 'http://example.com/'
+            genre: general
+            public: false
+            userId: string
+            description: string
+        example-2:
+          value:
+            name: h0GeHOGE
+            version: 1
+            rating: 1
+            engine: string
+            useSkin:
+              useDefault: true
+            useBackground:
+              useDefault: true
+            useEffect:
+              useDefault: true
+            useParticle:
+              useDefault: true
+            title:
+              ja: string
+            artists:
+              ja: string
+            author:
+              ja: string
+            cover:
+              type: LevelCover
+              hash: string
+              url: string
+            bgm:
+              type: LevelBgm
+              hash: string
+              url: string
+            data:
+              type: LevelData
+              hash: string
+              url: string
+            genre: general
+            public: false
+            userId: string
+            notes: 1
+            description:
+              ja: string
+      title: Level
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 100
+          pattern: '^[0-9a-zA-Z]+$'
+          example: h0GeHOGE
+        version:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        rating:
+          type: integer
+          description: Difficulty of the level
+          minimum: 1
+          maximum: 1000
+        engine:
+          type: string
+          description: Just a name of engine (Sonolus-express finds the engine from db)
+        useSkin:
+          type: object
+          properties:
+            useDefault:
+              type: boolean
+              description: 'If true (recommended), default resource specified by the engine will be used.'
+            item:
+              $ref: '#/components/schemas/Skin'
+        useBackground:
+          type: object
+          properties:
+            useDefault:
+              type: boolean
+              description: 'If true (recommended), default resource specified by the engine will be used.'
+            item:
+              $ref: '#/components/schemas/Background'
+        useEffect:
+          type: object
+          properties:
+            useDefault:
+              type: boolean
+              description: 'If true (recommended), default resource specified by the engine will be used.'
+            item:
+              $ref: '#/components/schemas/Effect'
+        useParticle:
+          type: object
+          properties:
+            useDefault:
+              type: boolean
+              description: 'If true (recommended), default resource specified by the engine will be used.'
+            item:
+              $ref: '#/components/schemas/Particle'
+        title:
+          $ref: '#/components/schemas/LocalizationText'
+        artists:
+          $ref: '#/components/schemas/LocalizationText'
+        author:
+          $ref: '#/components/schemas/LocalizationText'
+        cover:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        bgm:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        genre:
+          type: string
+          description: '独自要素: 楽曲のジャンル'
+          example: general
+          minLength: 1
+          maxLength: 20
+          default: general
+          pattern: '^[A-Za-z]+'
+        public:
+          type: boolean
+          default: false
+          description: '独自要素: 楽曲が全体公開かどうか'
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        notes:
+          type: integer
+          description: '独自要素: 譜面内のノーツ数'
+          minimum: 1
+          maximum: 10000000
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        description:
+          $ref: '#/components/schemas/LocalizationText'
+        coverHash:
+          type: string
+          description: '独自要素: サムネのハッシュ値(DBを兼ねるため)'
+          maxLength: 50
+        dataHash:
+          type: string
+          description: '独自要素: データのハッシュ(DBを兼ねるため)'
+          maxLength: 50
+        bgmHash:
+          type: string
+          description: '独自要素: BGMのハッシュ(DBを兼ねるため)'
+          maxLength: 50
+        playCount:
+          type: integer
+          description: '独自要素: プレイされた回数'
+          minimum: 0
+          maximum: 9999999999
+      required:
+        - name
+        - version
+        - rating
+        - engine
+        - title
+        - artists
+        - author
+        - cover
+        - bgm
+        - data
+        - genre
+        - description
+    Skin:
+      description: |-
+        A skin provides graphic elements to levels / It defines graphics for specific level
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Skin
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Server
+      type: object
+      x-examples: {}
+      title: Skin
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 100
+        version:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        title:
+          type: string
+          minLength: 1
+          description: base title of this content
+          maxLength: 100
+        subtitle:
+          type: string
+          minLength: 1
+          description: something footer(ex. featuring xyz) for this content
+          maxLength: 100
+        author:
+          type: string
+          minLength: 1
+          description: author of this content
+          maxLength: 50
+        thumbnail:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        texture:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    Background:
+      description: |-
+        A background provides background graphical element to levels / It defines background used for specific level
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Background
+      type: object
+      x-examples: {}
+      title: Background
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 50
+        version:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        title:
+          type: string
+          minLength: 1
+          description: base title of this content
+          maxLength: 100
+        subtitle:
+          type: string
+          minLength: 1
+          description: something footer(ex. featuring xyz) for this content
+          maxLength: 100
+        author:
+          type: string
+          minLength: 1
+          description: author of this content
+          maxLength: 50
+        thumbnail:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        image:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    Effect:
+      description: |-
+        An effect provides audio elements to levels / It defines audio effect used for specific level
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Effect
+      type: object
+      x-examples: {}
+      title: Effect
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 100
+        version:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        title:
+          type: string
+          minLength: 1
+          description: base title of this content
+          maxLength: 100
+        subtitle:
+          type: string
+          minLength: 1
+          description: something footer(ex. featuring xyz) for this content
+          maxLength: 50
+        author:
+          type: string
+          minLength: 1
+          description: author of this content
+        thumbnail:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    Particle:
+      description: |-
+        A particle provides particle effect elements to levels / It defines particle effect used for specific level
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Particle
+      type: object
+      x-examples: {}
+      title: Particle
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 100
+        version:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        title:
+          type: string
+          minLength: 1
+          description: base title of this content
+          maxLength: 100
+        subtitle:
+          type: string
+          minLength: 1
+          description: something footer(ex. featuring xyz) for this content
+          maxLength: 100
+        author:
+          type: string
+          minLength: 1
+          description: author of this content
+          maxLength: 50
+        thumbnail:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        texture:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    Engine:
+      description: |-
+        An engine provides scripted behaviors to levels / It defines shared game engine for playing
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Engine
+      type: object
+      x-examples: {}
+      title: Engine
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: english and number only name for searching
+          maxLength: 100
+        version:
+          type: integer
+          default: 1
+          example: 1
+          minimum: 1
+          description: Reserved for future update. current default is 1.
+          maximum: 100
+        title:
+          type: string
+          minLength: 1
+          description: base title of this content
+          maxLength: 100
+        subtitle:
+          type: string
+          minLength: 1
+          description: something footer(ex. featuring xyz) for this content
+          maxLength: 100
+        author:
+          type: string
+          minLength: 1
+          description: author of this content
+          maxLength: 50
+        thumbnail:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        data:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        configuration:
+          $ref: '#/components/schemas/SonolusResourceLocator'
+        skin:
+          $ref: '#/components/schemas/Skin'
+        background:
+          $ref: '#/components/schemas/Background'
+        effect:
+          $ref: '#/components/schemas/Effect'
+        particle:
+          $ref: '#/components/schemas/Particle'
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        userId:
+          type: string
+          description: '独自要素: 譜面作成者のユーザーID'
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    SonolusResourceLocator:
+      description: |-
+        Sonolus Resource Locator(SRL) is used in server endpoints in order for Sonolus to locate a resource.
+        All resources must be gzip compressed.
+        https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Resource-and-SRL
+      type: object
+      x-examples:
+        example:
+          type: EffectData
+          hash: addb1eb6402aa0dcb0d65c5a8dfd3935f08e3d39
+          url: /repository/EffectData/addb1eb6402aa0dcb0d65c5a8dfd3935f08e3d39
+      title: SonolusResourceLocator
+      properties:
+        type:
+          type: string
+          minLength: 1
+          enum:
+            - SkinData
+            - EngineThumbnail
+            - EffectData
+            - SkinTexture
+            - ParticleData
+            - EffectThumbnail
+            - LevelBgm
+            - BackgroundThumbnail
+            - EngineConfiguration
+            - LevelData
+            - ParticleTexture
+            - BackgroundData
+            - EngineData
+            - BackgroundImage
+            - LevelCover
+            - SkinThumbnail
+            - ParticleThumbnail
+          example: LevelData
+          maxLength: 50
+          description: When specify type together with hash uniquely identifies a resource.
+        hash:
+          type: string
+          minLength: 1
+          description: Hash is calculated using SHA1 on the resource file
+          maxLength: 100
+        url:
+          type: string
+          minLength: 1
+          description: 'If url starts with character /, it will be treated as relative path to server address.'
+          maxLength: 500
+    GetBackgroundListResponse:
+      title: GetBackgroundListResponse
+      type: object
+      x-examples:
+        example-1:
+          value:
+            pageCount: 1
+            items:
+              - name: string
+                version: 1
+                title: string
+                subtitle: string
+                author: string
+                thumbnail:
+                  type: LevelData
+                  hash: string
+                  url: string
+                data:
+                  type: LevelData
+                  hash: string
+                  url: string
+                image:
+                  type: LevelData
+                  hash: string
+                  url: string
+                createdTime: 0
+                updatedTime: 0
+                userId: string
+      description: Response struct of getBackgroundList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Background'
+      required:
+        - pageCount
+        - items
+    GetEffectListResponse:
+      title: GetEffectListResponse
+      type: object
+      x-examples: {}
+      description: Response struct of getEffectList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Effect'
+      required:
+        - pageCount
+        - items
+    GetEngineListResponse:
+      title: GetEngineListResponse
+      type: object
+      x-examples: {}
+      description: Response struct of getEngineList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Engine'
+      required:
+        - pageCount
+        - items
+    GetLevelListResponse:
+      title: GetLevelListResponse
+      type: object
+      x-examples: {}
+      description: Response struct of getLevelList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Level'
+      required:
+        - pageCount
+        - items
+    GetParticleListResponse:
+      title: GetParticleListResponse
+      type: object
+      x-examples: {}
+      description: Response struct of getParticleList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Particle'
+      required:
+        - pageCount
+        - items
+    GetSkinListResponse:
+      title: GetSkinListResponse
+      type: object
+      x-examples: {}
+      description: Response struct of getSkinList
+      properties:
+        pageCount:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+          description: 'used for pagination, default is 1'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skin'
+      required:
+        - pageCount
+        - items
+    GetLevelResponse:
+      description: Response struct of getLevel
+      type: object
+      x-examples: {}
+      properties:
+        item:
+          $ref: '#/components/schemas/Level'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Level'
+      required:
+        - item
+        - description
+        - recommended
+      title: GetLevelResponse
+    GetBackgroundResponse:
+      description: Response struct of getBackground
+      type: object
+      x-examples: {}
+      properties:
+        item:
+          $ref: '#/components/schemas/Background'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Background'
+      required:
+        - item
+        - description
+        - recommended
+      title: GetBackgroundResponse
+    GetEffectResponse:
+      description: Response struct of getEffect
+      type: object
+      x-examples: {}
+      title: GetEffectResponse
+      properties:
+        item:
+          $ref: '#/components/schemas/Effect'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Effect'
+      required:
+        - item
+        - description
+        - recommended
+    GetEngineResponse:
+      description: Response struct of getEngine
+      type: object
+      x-examples: {}
+      properties:
+        item:
+          $ref: '#/components/schemas/Engine'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Engine'
+      required:
+        - item
+        - description
+        - recommended
+      title: GetEngineResponse
+    GetParticleResponse:
+      description: Response struct of getParticle
+      type: object
+      x-examples: {}
+      properties:
+        item:
+          $ref: '#/components/schemas/Particle'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Particle'
+      required:
+        - item
+        - description
+        - recommended
+      title: GetParticleResponse
+    GetSkinResponse:
+      description: Response struct of getSkin
+      type: object
+      x-examples: {}
+      properties:
+        item:
+          $ref: '#/components/schemas/Skin'
+        description:
+          type: string
+          minLength: 1
+        recommended:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skin'
+      required:
+        - item
+        - description
+        - recommended
+      title: GetSkinResponse
+    ServerInfo:
+      description: Response / Request struct of getServerInfo
+      type: object
+      x-examples:
+        example-1:
+          levels: []
+          skins: []
+          backgrounds: []
+          effects: []
+          particles: []
+          engines: []
+      title: ServerInfo
+      properties:
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Level'
+        skins:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skin'
+        backgrounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Background'
+        effects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Effect'
+        particles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Particle'
+        engines:
+          type: array
+          items:
+            $ref: '#/components/schemas/Engine'
+      required:
+        - levels
+        - skins
+        - backgrounds
+        - effects
+        - particles
+        - engines
+    User:
+      title: User
+      type: object
+      description: ユーザー情報型
+      properties:
+        userId:
+          type: string
+          description: FirebaseDatabase上のユーザーID
+          example: gz6xQrm79IN4BiQag78sQqYWYlC3
+          default: gz6xQrm79IN4BiQag78sQqYWYlC3
+          minLength: 1
+          maxLength: 30
+        testId:
+          type: string
+          description: テスト用サーバーのエンドポイント
+          example: htcckfcn
+          minLength: 8
+          maxLength: 8
+          default: htcckfcn
+        isAdmin:
+          type: boolean
+          description: 管理者か否か
+          default: false
+        isDeleted:
+          type: boolean
+          description: アカウント削除フラグ(trueで削除済み扱い)
+          default: false
+        totalFumen:
+          type: integer
+          description: トータル譜面数
+          minimum: 0
+          maximum: 100000000000
+        createdTime:
+          type: integer
+          description: '独自要素: データを作成したエポックミリ秒(ソート用)'
+          minimum: 0
+        updatedTime:
+          type: integer
+          description: '独自要素: データを更新したエポックミリ秒(ソート用)'
+          minimum: 0
+        description:
+          type: string
+          description: '独自要素: サイト内および譜面情報欄に表示される説明文'
+          minLength: 1
+          maxLength: 3000
+    GetUserListResponse:
+      title: GetUserListResponse
+      type: object
+      description: Structure of getList response
+      properties:
+        users:
+          type: array
+          description: サーバーに登録されたユーザー一覧
+          items:
+            $ref: '#/components/schemas/User'
+        total:
+          type: integer
+          description: 合計アカウント数
+        pages:
+          type: integer
+          description: 合計ページ数
+      required:
+        - users
+        - total
+        - pages
+    LocalizationText:
+      title: LocalizationText
+      type: object
+      description: ''
+      properties:
+        cn:
+          type: string
+          description: Simplified Chinese
+          minLength: 1
+          maxLength: 1000
+        tw:
+          type: string
+          description: TraditionalChinese
+          minLength: 1
+          maxLength: 1000
+        ja:
+          type: string
+          description: Japanese
+          minLength: 1
+          maxLength: 1000
+        en:
+          type: string
+          description: English
+          minLength: 1
+          maxLength: 1000
+        ko:
+          type: string
+          description: Korean
+          minLength: 1
+          maxLength: 1000
+        id:
+          type: string
+          description: Indonesian
+          minLength: 1
+          maxLength: 1000
+        es:
+          type: string
+          description: Spanish
+          minLength: 1
+          maxLength: 1000
+      required:
+        - ja
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+  parameters:
+    localization:
+      name: localization
+      in: query
+      required: false
+      schema:
+        type: string
+        example: en
+        maxLength: 50
+        minLength: 0
+        default: ja
+      description: It localizes response items if possible
+      allowEmptyValue: true
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 10000
+        example: 1
+        default: 1
+      description: It filters items for pagination if possible
+    keywords:
+      name: keywords
+      in: query
+      required: false
+      schema:
+        type: string
+        example: Redo
+        maxLength: 300
+        minLength: 0
+      description: It filters items for search from list if possible
+      allowEmptyValue: true
+tags:
+  - name: backgrounds
+  - name: effects
+  - name: engines
+  - name: info
+  - name: levels
+  - name: particles
+  - name: skins
+  - name: tests
+  - name: uploads
+  - name: users
+security: []
