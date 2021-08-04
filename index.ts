@@ -27,6 +27,9 @@ potato.levelDetailsHandler = customLevelDetailsHandler
 // Add static folder (for use with sonolus-server-landing)
 app.use('/', express.static(config.static))
 
+// Add Open-API Spec
+app.use('/spec', express.static('./api.yaml'))
+
 // Add static folder (for use with upload)
 app.use('/repository/', express.static('./db/levels/'))
 

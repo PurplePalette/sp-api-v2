@@ -10,8 +10,41 @@ const levels = initLevelsDatabase()
  * Express: add/edit/delete level handler
 */
 export const levelsRouter = express.Router()
-levelsRouter.post('/', (req, res) => {
-  res.send('Hello.')
+
+// Default handling is json
+levelsRouter.use(express.json())
+
+// Add validator
+levelsRouter.use(
+  OpenApiValidator.middleware({
+    apiSpec: './api.yaml',
+    validateRequests: {
+      removeAdditional: 'all'
+    }
+  }),
+)
+
+// I couldn't found express-opeapi-validator-error type
+interface OpenApiError {
+  status?: number
+  errors?: string
+  message?: string
+}
+
+// Default error handler
+levelsRouter.use((
+  err: OpenApiError,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction
+) => {
+  res.status(err.status || 500).json({
+    message: err.message,
+    errors: err.errors,
+  })
+})
 })
 levelsRouter.put('/:levelId', (req, res) => {
   req.params.levelId
