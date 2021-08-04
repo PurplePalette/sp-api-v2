@@ -28,6 +28,14 @@ export interface GlobalConfig {
   */
   static: string,
   /**
+   * Packed files (sonolus-pack) will stored to here
+  */
+  packer: string,
+  /**
+   * Base engine of level
+  */
+  engine: string,
+  /**
    * Max file size of upload
    */
   maxSize: number,
@@ -44,6 +52,8 @@ export const config : GlobalConfig = {
   port: 3000,
   uploads: 'uploads/',
   static: './public',
+  packer: './packer',
+  engine: 'pjsekai',
   maxSize: 15 * 1024 * 1024,
   sonolusOptions: {
     version: '0.5.3',
