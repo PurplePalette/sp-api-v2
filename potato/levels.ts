@@ -6,7 +6,9 @@ import { CustomLevelInfo, initLevelsDatabase } from './reader'
 // Load custom levels database
 const levels = initLevelsDatabase()
 
-// Express add/edit/delete level handler
+/**
+ * Express: add/edit/delete level handler
+*/
 export const levelsRouter = express.Router()
 levelsRouter.post('/', (req, res) => {
   res.send('Hello.')
@@ -15,8 +17,14 @@ levelsRouter.put('/:levelId', (req, res) => {
   req.params.levelId
   res.send('Hello.')
 })
+levelsRouter.delete('/:levelId', (req, res) => {
+  req.params.levelId
+  res.send('Hello.')
+})
 
-// Sonolus-Express level list handler
+/**
+ * Sonolus-Express: level list handler
+*/
 export function customLevelListHandler(
   sonolus: Sonolus,
   keywords: string | undefined,
@@ -30,7 +38,9 @@ export function customLevelListHandler(
   )
 }
 
-// Sonolus-Express level list handler
+/**
+ * Sonolus-Express: level detail handler
+*/
 export function customLevelDetailsHandler(
   sonolus: Sonolus,
   name: string
