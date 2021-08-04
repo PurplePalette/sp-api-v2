@@ -18,6 +18,14 @@ https://qiita.com/zaburo/items/69726cc42ef774990279
 https://qiita.com/rubytomato@github/items/1696530bb9fd59aa28d8
 
 ## Setup Express.ts hot-reload
+	Development起動
+	 yarn run dev
+	Production起動
+	 yarn run start
+	ESLint起動(恐らくはVSCode等から呼ぶ)
+	 yarn run lint
+	 yarn run eslint
+	 yarn run eslint:fix
 https://ryotarch.com/javascript/nodejs/ts-node-dev/
 
 ## ES6(ES2015)とはなにか
@@ -33,3 +41,15 @@ https://stackoverflow.com/questions/21194934/how-to-create-a-directory-if-it-doe
 ## ESLintの導入
 https://qiita.com/notakaos/items/85fd2f5c549f247585b1
 https://github.com/PurplePalette/sonolus-uploader/blob/main/.eslintrc.js
+
+### エラー "parserOptions.project" has been set for @typescript-eslint/parser. The file does not match your project config
+https://github.com/typescript-eslint/typescript-eslint/issues/967
+https://wonwon-eater.com/ts-eslint-import-error/
+
+## Multerの導入
+https://tech.chakapoko.com/nodejs/express/upload.html
+https://codingshiksha.com/javascript/node-js-multer-file-upload-type-validation-filters-and-limit-file-size-and-error-handling-using-express-full-tutorial-for-beginners-with-examples/
+https://github.com/expressjs/multer
+
+### CB(callback)は不詳...
+https://stackoverflow.com/questions/55925522/what-is-cb-in-multer
