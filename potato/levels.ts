@@ -10,7 +10,7 @@ import fs from 'fs'
 import { config } from '../config'
 
 // Load custom levels database
-const levels = initLevelsDatabase()
+let levels = initLevelsDatabase()
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
 /**
@@ -125,10 +125,84 @@ levelsRouter.post('/:levelId', (req, res) => {
   levels.push(levelInfo)
   res.json({ message: 'ok' })
 })
-levelsRouter.patch('/:levelId', (req, res) => {
-  req.params.levelId
-  res.send('Hello.')
+
+levelsRouter.patch('/:levelName', (req, res) => {
+  const reqLevel = req.body as unknown as CustomLevelInfo
+  const matchedLevel = levels.filter(level => level.name === req.params.levelName)
+  if (matchedLevel.length === 0) {
+    res.json({ message: 'Level not found' })
+    return
+  }
+  const oldLevel = matchedLevel[0]
+  const now = new Date()
+  const unixTime = Math.floor(now.getTime() / 1000)
+  const newLevel: CustomLevelInfo = {
+    name: oldLevel.name,
+    version: 1,
+    rating: reqLevel.rating,
+    engine: config.engine,
+    useSkin: {
+      useDefault: true,
+    },
+    useBackground: {
+      useDefault: true,
+    },
+    useEffect: {
+      useDefault: true,
+    },
+    useParticle: {
+      useDefault: true,
+    },
+    title: reqLevel.title,
+    artists: reqLevel.artists,
+    author: reqLevel.author,
+    genre: reqLevel.genre,
+    public: reqLevel.public,
+    userId: 'TODO',
+    notes: 0,
+    createdTime: oldLevel.createdTime,
+    updatedTime: unixTime,
+    description: reqLevel.description,
+    playCount: oldLevel.playCount,
+    coverHash: '',
+    bgmHash: '',
+    dataHash: '',
+    cover: {
+      type: 'LevelCover',
+      hash: '',
+      url: ''
+    },
+    bgm: {
+      type: 'LevelBgm',
+      hash: '',
+      url: ''
+    },
+    data: {
+      type: 'LevelData',
+      hash: '',
+      url: ''
+    }
+  }
+  const levelName = oldLevel.name
+  for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
+    if (file[0].includes('uploads')) {
+      const separated = file[0].split('/')
+      const fileName = separated[separated.length - 1].replace('.', '')
+      try {
+        fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
+      } catch (e) {
+        res.json({ message: 'Invalid file specified' })
+        return
+      }
+    }
+  }
+  fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(newLevel, null, '    '))
+  const levelInfo = initLevelInfo(levelName)
+  levels = levels.filter(level => level.name !== levelName)
+  levels.push(levelInfo)
+  res.json({ message: 'ok' })
 })
+
 levelsRouter.delete('/:levelId', (req, res) => {
   req.params.levelId
   res.send('Hello.')
