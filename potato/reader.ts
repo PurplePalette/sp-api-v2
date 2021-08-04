@@ -16,12 +16,18 @@ export interface CustomLevelInfo extends LevelInfo {
   public: boolean
 }
 
+/**
+ * Generate SHA1 hash of a file
+*/
 function getHashFromFile(path: string): string {
   const file = fs.readFileSync(path)
   const hash = createHash('sha1').update(file).digest('hex')
   return hash
 }
 
+/**
+ * Inject name/data/cover/bgm alternative to sonolus-generate-static
+*/
 function injectLackedFields(levelData: CustomLevelInfo, levelName: string) {
   levelData.name = levelName
   levelData.data = {
@@ -42,6 +48,10 @@ function injectLackedFields(levelData: CustomLevelInfo, levelName: string) {
   return levelData
 }
 
+/**
+ * Load a level from a file.
+ * If the level file is not customized level file, return undefined.
+*/
 function loadLevelInfo(levelName: string): CustomLevelInfo | undefined {
   const levelData = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as CustomLevelInfo
   if (levelData.userId && levelData.coverHash && levelData.public) {
@@ -51,6 +61,11 @@ function loadLevelInfo(levelName: string): CustomLevelInfo | undefined {
   }
 }
 
+/**
+ * Load a original level file and cook the level to customized level file.
+ * This function gzip level data, and create hash for the level files.
+ * It may take some time.
+*/
 export function initLevelInfo(levelName: string): CustomLevelInfo {
   const levelInfo = JSON.parse(fs.readFileSync(`./db/levels/${levelName}/info.json`).toString()) as CustomLevelInfo
   const levelDataGzip = gzipSync(fs.readFileSync(`./db/levels/${levelName}/data.json`).toString(), { level: 9 })
@@ -65,6 +80,10 @@ export function initLevelInfo(levelName: string): CustomLevelInfo {
   return injectLackedFields(levelInfo, levelName)
 }
 
+/**
+ * Load db/levels folder and create levels database.
+ * If found non-customized file(no hash exists in json) while loading, try to cook the level.
+*/
 export function initLevelsDatabase() : CustomLevelInfo[] {
   const levels: CustomLevelInfo[] = []
   const levelFolders = fs.readdirSync('./db/levels')
@@ -81,6 +100,6 @@ export function initLevelsDatabase() : CustomLevelInfo[] {
       console.error('Error reading level info file for ' + levelName)
     }
   }
-  console.log(levels)
+  // console.log(levels)
   return levels
 }
