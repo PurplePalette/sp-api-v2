@@ -16,7 +16,7 @@ const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnp
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './uploads')
+    cb(null, config.uploads)
   },
   filename: function (_, file, cb) {
     cb(null, nanoid() + path.extname(file.originalname))
