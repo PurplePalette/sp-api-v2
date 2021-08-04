@@ -1,5 +1,4 @@
 import express from 'express'
-import fs from 'fs'
 import multer from 'multer'
 import { Sonolus } from 'sonolus-express'
 import { config } from './config'
@@ -20,37 +19,18 @@ const potato = new Sonolus(app, config.sonolusOptions)
 // Add static folder (for use with sonolus-server-landing)
 app.use('/', express.static(config.static))
 
-// Load uploads folder (for use with sonolus-pack)
-if (fs.existsSync(config.uploads)) {
-  try {
-    potato.load(config.uploads)
-  } catch (e) {
-    console.log('Database was not valid...')
-  }
-} else {
-  console.log(`${config.uploads} folder was not exist.`)
-  fs.mkdirSync(config.uploads)
-}
+// Add static folder (for use with sonolus-pack)
+app.use('/', express.static(config.packer))
 
-// Receive file upload
-app.post('/upload', (req, res) => {
-  upload(req, res, function (err) {
-    // This upload handler needs mimetype and filename
-    // If request from python with just binary, it return success but don't save file.
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      console.log(err)
-      res.status(400)
-      res.send('Requested file was not valid.')
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      res.send(err)
-      res.status(500)
-      res.send('Internal server error. Please try again.')
-    }
-    res.send('File saved.')
-  })
-})
+// Add static folder (for use with upload)
+app.use('/repository/', express.static(config.uploads))
+
+// Load packer folder (for use with sonolus-pack)
+try {
+  potato.load(config.packer)
+} catch (e) {
+  console.log('Sonolus-packer db was not valid!')
+}
 
 // Startup the server
 app.listen(config.port, () => {

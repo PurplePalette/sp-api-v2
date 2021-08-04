@@ -28,6 +28,10 @@ export interface GlobalConfig {
   */
   static: string,
   /**
+   * Packed files (sonolus-pack) will stored to here
+  */
+  packer: string,
+  /**
    * Max file size of upload
    */
   maxSize: number,
@@ -42,8 +46,9 @@ export interface GlobalConfig {
 */
 export const config : GlobalConfig = {
   port: 3000,
-  uploads: 'uploads/',
+  uploads: './uploads',
   static: './public',
+  packer: './packer',
   maxSize: 15 * 1024 * 1024,
   sonolusOptions: {
     version: '0.5.3',
