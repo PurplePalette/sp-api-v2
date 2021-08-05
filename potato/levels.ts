@@ -1,7 +1,7 @@
 import express from 'express'
 import { Sonolus } from 'sonolus-express'
 import { defaultListHandler, defaultDetailsHandler, InfoDetails } from 'sonolus-express'
-import { initLevelsDatabase, initLevelInfo } from './reader'
+import { initLevelInfo } from './reader'
 import CustomLevelInfo from '../types/level'
 import * as OpenApiValidator from 'express-openapi-validator'
 import type { NextFunction, Request, Response } from 'express'
@@ -9,8 +9,6 @@ import { customAlphabet } from 'nanoid'
 import fs from 'fs'
 import { config } from '../config'
 
-// Load custom levels database
-let levels = initLevelsDatabase()
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
 /**
@@ -122,12 +120,15 @@ levelsRouter.post('/:levelId', (req, res) => {
   }
   fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(newLevel, null, '    '))
   const levelInfo = initLevelInfo(levelName)
+  const levels = req.app.locals.levels as CustomLevelInfo[]
   levels.push(levelInfo)
+  req.app.set('levels', levels)
   res.json({ message: 'ok' })
 })
 
 levelsRouter.patch('/:levelName', (req, res) => {
   const reqLevel = req.body as unknown as CustomLevelInfo
+  let levels = req.app.locals.levels as CustomLevelInfo[]
   const matchedLevel = levels.filter(level => level.name === req.params.levelName)
   if (matchedLevel.length === 0) {
     res.json({ message: 'Level not found' })
@@ -207,29 +208,3 @@ levelsRouter.delete('/:levelId', (req, res) => {
   req.params.levelId
   res.send('Hello.')
 })
-
-/**
- * Sonolus-Express: level list handler
-*/
-export function customLevelListHandler(
-  sonolus: Sonolus,
-  keywords: string | undefined,
-  page: number
-): { pageCount: number, infos: CustomLevelInfo[] } {
-  return defaultListHandler(
-    levels,
-    ['name', 'rating', 'title', 'artists', 'author', 'description'],
-    keywords,
-    page
-  )
-}
-
-/**
- * Sonolus-Express: level detail handler
-*/
-export function customLevelDetailsHandler(
-  sonolus: Sonolus,
-  name: string
-): InfoDetails<CustomLevelInfo> | undefined {
-  return defaultDetailsHandler(levels, name)
-}
