@@ -2,6 +2,7 @@ import fs from 'fs'
 import { gzipSync } from 'zlib'
 import { createHash } from 'crypto'
 import CustomLevelInfo from '../types/level'
+import CustomUserInfo from '../types/user'
 
 /**
  * Generate SHA1 hash of a file
@@ -71,10 +72,14 @@ export function initLevelInfo(levelName: string): CustomLevelInfo {
  * Load db/levels folder and create levels database.
  * If found non-customized file(no hash exists in json) while loading, try to cook the level.
 */
-export function initLevelsDatabase() : CustomLevelInfo[] {
+export function initLevelsDatabase(): CustomLevelInfo[] {
+  console.log('Loading levels database...')
   const levels: CustomLevelInfo[] = []
   const levelFolders = fs.readdirSync('./db/levels')
   for (const levelName of levelFolders) {
+    if (levelName === '.gitkeep') {
+      continue
+    }
     try {
       const level = loadLevelInfo(levelName)
       if (level) {
@@ -87,6 +92,28 @@ export function initLevelsDatabase() : CustomLevelInfo[] {
       console.error('Error reading level info file for ' + levelName)
     }
   }
-  // console.log(levels)
+  console.log('Loaded levels database successfully.')
   return levels
+}
+
+/**
+ * Load db/users folder and create users database.
+*/
+export function initUsersDatabase(): CustomUserInfo[] {
+  console.log('Loading users database...')
+  const users: CustomUserInfo[] = []
+  const userFolders = fs.readdirSync('./db/users')
+  for (const userFile of userFolders) {
+    if (userFile === '.gitkeep') {
+      continue
+    }
+    try {
+      const userData = JSON.parse(fs.readFileSync(`./db/users/${userFile}`).toString()) as CustomUserInfo
+      users.push(userData)
+    } catch (e) {
+      console.error('Error reading user info file for ' + userFile)
+    }
+  }
+  console.log('Loaded users database successfully.')
+  return users
 }
