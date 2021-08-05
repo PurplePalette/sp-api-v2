@@ -2,6 +2,7 @@ import express from 'express'
 import { Sonolus } from 'sonolus-express'
 import { config } from './config'
 import { uploadRouter } from './potato/upload'
+import { usersRouter } from './potato/users'
 import { levelsRouter, customLevelListHandler, customLevelDetailsHandler } from './potato/levels'
 
 /*
@@ -18,6 +19,9 @@ app.use('/', uploadRouter)
 
 // Inject levelsRouter
 app.use('/levels', levelsRouter)
+
+// Inject usersRouter
+app.use('/users', usersRouter)
 
 // Inject sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
