@@ -1,15 +1,11 @@
 import express from 'express'
-import { Sonolus } from 'sonolus-express'
+import { Sonolus, EngineInfo } from 'sonolus-express'
 import { config } from './config'
 import { uploadRouter } from './potato/upload'
-<<<<<<< HEAD
 import { usersRouter } from './potato/users'
-import { levelsRouter, customLevelListHandler, customLevelDetailsHandler } from './potato/levels'
-=======
-import { initLevelsDatabase } from './potato/reader'
+import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
 import { levelsRouter } from './potato/levels'
 import CustomLevelInfo from './types/level'
->>>>>>> 84519eb119d742911611d68ffbd16e4421280d65
 
 /*
  * Sonolus-uploader-core-2 Main class
@@ -26,13 +22,12 @@ app.use('/', uploadRouter)
 // Inject levelsRouter
 app.use('/levels', levelsRouter)
 
-<<<<<<< HEAD
 // Inject usersRouter
 app.use('/users', usersRouter)
-=======
+
 // Set levels to express.js global (not recommended...)
 app.locals.levels = initLevelsDatabase()
->>>>>>> 84519eb119d742911611d68ffbd16e4421280d65
+app.locals.users = initUsersDatabase()
 
 // Inject sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
@@ -53,6 +48,9 @@ try {
 } catch (e) {
   console.log('Sonolus-packer db was not valid!')
 }
+
+const defaultEngine : EngineInfo = potato.db.engines.filter(engine => engine.name === config.engine)[0]
+app.locals.defaultEngine = defaultEngine
 
 // Startup the server
 app.listen(config.port, () => {
