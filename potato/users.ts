@@ -44,37 +44,6 @@ usersRouter.use((
   })
 })
 
-// Per-user level list
-usersRouter.get('/:userId/levels/list', (req, res) => {
-  const users = req.app.locals.users as CustomUserInfo[]
-  const levels = req.app.locals.levels as CustomLevelInfo[]
-  const matchedUser = users.filter(user => user.userId === req.params.userId)
-  if (matchedUser.length === 0) {
-    res.json({ message: 'User not found' })
-    return
-  }
-  const userLevels = levels.filter(level => level.userId === req.params.userId)
-  const lang = req.query.localization ? req.query.localization.toString() : 'ja'
-  const respLevels: any[] = userLevels.map(level => {
-    return {
-      name: level.name,
-      title: level.title[lang],
-      artists: level.artists[lang],
-      author: level.author[lang],
-      version: level.version,
-      rating: level.rating,
-      description: level.description[lang],
-      createdTime: level.createdTime,
-      updatedTime: level.updatedTime,
-      cover: level.cover,
-      bgm: level.bgm,
-      data: level.data,
-    }
-  })
-  /// How to solve EngineData to EngineInfo...?
-  res.json(respLevels)
-})
-
 // Get user detail
 usersRouter.get('/:userId', (req, res) => {
   const users = req.app.locals.users as CustomUserInfo[]

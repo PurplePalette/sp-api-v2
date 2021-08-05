@@ -33,4 +33,8 @@ export default interface User {
     * 独自要素: サイト内および譜面情報欄に表示される説明文
     */
     'description': string;
+    /**
+     * 投稿履歴
+    */
+    'uploadHistories': string[]
 }
