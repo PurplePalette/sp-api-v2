@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "ts-node-dev --respawn index.ts",
+    "dev": "ts-node-dev --respawn index.ts --files index.ts",
     "check-types": "tsc --noEmit",
     "eslint": "eslint *.ts **/*.ts",
     "eslint:fix": "eslint *.ts **/*.ts --fix",
@@ -12,6 +12,7 @@
     "@typescript-eslint/parser": "^4.29.0",
     "express": "^4.17.1",
     "express-openapi-validator": "^4.12.15",
+    "firebase-admin": "^9.11.0",
     "multer": "^1.4.2",
     "nanoid": "^3.1.23",
     "sonolus-pack": "^0.1.0",
