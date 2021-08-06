@@ -1,6 +1,4 @@
 import express from 'express'
-import { Sonolus } from 'sonolus-express'
-import { defaultListHandler, defaultDetailsHandler, InfoDetails } from 'sonolus-express'
 import { initLevelInfo } from './reader'
 import CustomLevelInfo from '../types/level'
 import * as OpenApiValidator from 'express-openapi-validator'
@@ -8,6 +6,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { customAlphabet } from 'nanoid'
 import fs from 'fs'
 import { config } from '../config'
+import authMiddleware from './auth'
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
@@ -18,6 +17,9 @@ export const levelsRouter = express.Router()
 
 // Default handling is json
 levelsRouter.use(express.json())
+
+// Add firebase auth middleware
+//levelsRouter.use(authMiddleware)
 
 // Add validator
 levelsRouter.use(
