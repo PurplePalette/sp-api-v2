@@ -3,7 +3,8 @@
     "include": [
       "*.ts",
       "**/*.ts",
-      ".eslintrc.js"
+      ".eslintrc.js",
+      "types/express.d.ts"
     ],
     "exclude": [
       "node_modules",
