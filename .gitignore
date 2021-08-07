@@ -16,3 +16,4 @@ db/source/backgrounds/*
 db/source/skins/*
 db/source/particles/*
 !.gitkeep
+serviceAccount.json

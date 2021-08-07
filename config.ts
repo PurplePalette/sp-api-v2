@@ -1,4 +1,4 @@
-// import * as serviceAccount from './serviceAccount.json'
+import * as serviceAccount from './serviceAccount.json'
 
 export interface SonolusOptions {
   /**
@@ -65,8 +65,6 @@ export const config : GlobalConfig = {
 }
 
 export const firebaseParams = {
-  /*
-  TODO: Add firebase service account template
   type: serviceAccount.type,
   projectId: serviceAccount.project_id,
   privateKeyId: serviceAccount.private_key_id,
@@ -77,5 +75,4 @@ export const firebaseParams = {
   tokenUri: serviceAccount.token_uri,
   authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
   clientC509CertUrl: serviceAccount.client_x509_cert_url
-  */
 }
