@@ -1,7 +1,7 @@
 import fs from 'fs'
+import type { LevelInfo } from 'sonolus-express'
 import { gzipSync } from 'zlib'
 import { createHash } from 'crypto'
-import CustomLevelInfo from '../types/level'
 import CustomUserInfo from '../types/user'
 
 /**
@@ -16,7 +16,7 @@ function getHashFromFile(path: string): string {
 /**
  * Inject name/data/cover/bgm alternative to sonolus-generate-static
 */
-function injectLackedFields(levelData: CustomLevelInfo, levelName: string) {
+function injectLackedFields(levelData: LevelInfo, levelName: string) {
   levelData.name = levelName
   levelData.data = {
     type: 'LevelData',
@@ -40,8 +40,8 @@ function injectLackedFields(levelData: CustomLevelInfo, levelName: string) {
  * Load a level from a file.
  * If the level file is not customized level file, return undefined.
 */
-function loadLevelInfo(levelName: string): CustomLevelInfo | undefined {
-  const levelData = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as CustomLevelInfo
+function loadLevelInfo(levelName: string): LevelInfo | undefined {
+  const levelData = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as LevelInfo
   if (levelData.userId && levelData.coverHash && levelData.public) {
     return injectLackedFields(levelData, levelName)
   } else {
@@ -54,8 +54,8 @@ function loadLevelInfo(levelName: string): CustomLevelInfo | undefined {
  * This function gzip level data, and create hash for the level files.
  * It may take some time.
 */
-export function initLevelInfo(levelName: string): CustomLevelInfo {
-  const levelInfo = JSON.parse(fs.readFileSync(`./db/levels/${levelName}/info.json`).toString()) as CustomLevelInfo
+export function initLevelInfo(levelName: string): LevelInfo {
+  const levelInfo = JSON.parse(fs.readFileSync(`./db/levels/${levelName}/info.json`).toString()) as LevelInfo
   const levelDataGzip = gzipSync(fs.readFileSync(`./db/levels/${levelName}/data.json`).toString(), { level: 9 })
   fs.writeFileSync(`./db/levels/${levelName}/data.gz`, levelDataGzip)
   const levelDataHash = getHashFromFile(`./db/levels/${levelName}/data.gz`)
@@ -72,9 +72,9 @@ export function initLevelInfo(levelName: string): CustomLevelInfo {
  * Load db/levels folder and create levels database.
  * If found non-customized file(no hash exists in json) while loading, try to cook the level.
 */
-export function initLevelsDatabase(): CustomLevelInfo[] {
+export function initLevelsDatabase(): LevelInfo[] {
   console.log('Loading levels database...')
-  const levels: CustomLevelInfo[] = []
+  const levels: LevelInfo[] = []
   const levelFolders = fs.readdirSync('./db/levels')
   for (const levelName of levelFolders) {
     if (levelName === '.gitkeep') {
