@@ -5,6 +5,9 @@ import { uploadRouter } from './potato/upload'
 import { usersRouter } from './potato/users'
 import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
 import { levelsRouter } from './potato/levels'
+import { createTestsRouter } from './potato/tests'
+import * as OpenApiValidator from 'express-openapi-validator'
+import type { NextFunction, Request, Response } from 'express'
 import CustomLevelInfo from './types/level'
 
 /*
@@ -32,6 +35,9 @@ app.locals.users = initUsersDatabase()
 // Inject sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
 potato.db.levels = app.locals.levels as CustomLevelInfo[]
+
+// Inject testsRouter
+app.use('/tests', createTestsRouter(potato))
 
 // Add static folder (for use with sonolus-server-landing)
 app.use('/', express.static(config.static))
