@@ -5,7 +5,8 @@
       "*.ts",
       "**/*.ts",
       ".eslintrc.js",
-      "types/express.d.ts"
+      "types/express.d.ts",
+      "types/sonolus-express.d.ts"
     ],
     "exclude": [
       "node_modules",
