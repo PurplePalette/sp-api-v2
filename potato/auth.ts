@@ -1,6 +1,6 @@
 import * as firebase from 'firebase-admin'
 import { firebaseParams } from '../config'
-import type { NextFunction, Request, Response } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 
 firebase.initializeApp({
   credential: firebase.credential.cert(firebaseParams),
@@ -11,10 +11,10 @@ export async function verifyToken (idToken: string) : Promise<string> {
   return decodedToken.uid
 }
 
-export default async function authMiddleware (req: Request, res: Response, next: NextFunction) : Promise<void> {
+export default function verifyUser (req: Request, res: Response, next: NextFunction) : void {
   try {
     if (!req.headers) {
-      throw new Error('header missing')
+      throw new Error('Headers are missing')
     }
     if (!req.headers.authorization) {
       throw new Error('Authorization header missing')
@@ -23,11 +23,15 @@ export default async function authMiddleware (req: Request, res: Response, next:
       throw new Error('Authorization must be bearer')
     }
     const token = req.headers.authorization.split(' ')[1]
-    const userId = await verifyToken(token)
-    if (userId) {
+    verifyToken(token).then(userId => {
       req.userId = userId
       next()
-    }
+    }).catch(err => {
+      console.log(err)
+      res.status(401).json({
+        error: new Error('Invalid request!')
+      })
+    })
   } catch {
     res.status(401).json({
       error: new Error('Invalid request!')
