@@ -9,10 +9,11 @@ db/levels/*
 db/users/*
 db/pack/repository
 db/pack/db.json
-db/source/effects/*
-db/source/effects/*
-db/source/engines/*
-db/source/backgrounds/*
-db/source/skins/*
-db/source/particles/*
+db/source/engines/pjsekai
+db/source/particles/psekai
+db/source/backgrounds/psekai
+db/source/effects/psekai
+db/source/skins/psekai2
+db/source/skins/psekai.2
 !.gitkeep
+serviceAccount.json

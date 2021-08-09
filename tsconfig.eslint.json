@@ -1,9 +1,11 @@
 {
+    "resolveJsonModule": true,
     "extends": "./tsconfig.json",
     "include": [
       "*.ts",
       "**/*.ts",
-      ".eslintrc.js"
+      ".eslintrc.js",
+      "types/express.d.ts"
     ],
     "exclude": [
       "node_modules",

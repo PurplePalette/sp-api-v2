@@ -1,6 +1,4 @@
 import express from 'express'
-import { Sonolus } from 'sonolus-express'
-import { defaultListHandler, defaultDetailsHandler, InfoDetails } from 'sonolus-express'
 import { initLevelInfo } from './reader'
 import CustomLevelInfo from '../types/level'
 import * as OpenApiValidator from 'express-openapi-validator'
@@ -8,6 +6,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { customAlphabet } from 'nanoid'
 import fs from 'fs'
 import { config } from '../config'
+import verifyUser from './auth'
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
@@ -29,7 +28,7 @@ levelsRouter.use(
   }),
 )
 
-// I couldn't found express-opeapi-validator-error type
+// I couldn't found express-openapi-validator-error type
 interface OpenApiError {
   status?: number
   errors?: string
@@ -51,7 +50,7 @@ levelsRouter.use((
   })
 })
 
-levelsRouter.post('/:levelId', (req, res) => {
+levelsRouter.post('/:levelId', verifyUser, (req, res) => {
   const reqLevel = req.body as unknown as CustomLevelInfo
   let levelName = nanoid()
   while (fs.existsSync(`./db/levels/${levelName}`)) {
@@ -60,6 +59,10 @@ levelsRouter.post('/:levelId', (req, res) => {
   fs.mkdirSync(`./db/levels/${levelName}`)
   const now = new Date()
   const unixTime = Math.floor(now.getTime() / 1000)
+  if (!req.userId) {
+    res.status(401).json({ message: 'Unauthorized' })
+    return
+  }
   const newLevel: CustomLevelInfo = {
     name: levelName,
     version: 1,
@@ -82,7 +85,7 @@ levelsRouter.post('/:levelId', (req, res) => {
     author: reqLevel.author,
     genre: reqLevel.genre,
     public: false,
-    userId: 'TODO',
+    userId: req.userId,
     notes: 0,
     createdTime: unixTime,
     updatedTime: unixTime,
@@ -126,7 +129,7 @@ levelsRouter.post('/:levelId', (req, res) => {
   res.json({ message: 'ok' })
 })
 
-levelsRouter.patch('/:levelName', (req, res) => {
+levelsRouter.patch('/:levelName', verifyUser, (req, res) => {
   const reqLevel = req.body as unknown as CustomLevelInfo
   let levels = req.app.locals.levels as CustomLevelInfo[]
   const matchedLevel = levels.filter(level => level.name === req.params.levelName)
@@ -135,6 +138,10 @@ levelsRouter.patch('/:levelName', (req, res) => {
     return
   }
   const oldLevel = matchedLevel[0]
+  if (oldLevel.userId !== req.userId) {
+    res.status(403).json({ message: 'You are not the author of this level' })
+    return
+  }
   const now = new Date()
   const unixTime = Math.floor(now.getTime() / 1000)
   const newLevel: CustomLevelInfo = {
@@ -159,7 +166,7 @@ levelsRouter.patch('/:levelName', (req, res) => {
     author: reqLevel.author,
     genre: reqLevel.genre,
     public: reqLevel.public,
-    userId: 'TODO',
+    userId: req.userId,
     notes: 0,
     createdTime: oldLevel.createdTime,
     updatedTime: unixTime,
@@ -201,10 +208,24 @@ levelsRouter.patch('/:levelName', (req, res) => {
   const levelInfo = initLevelInfo(levelName)
   levels = levels.filter(level => level.name !== levelName)
   levels.push(levelInfo)
+  req.app.set('levels', levels)
   res.json({ message: 'ok' })
 })
 
-levelsRouter.delete('/:levelId', (req, res) => {
-  req.params.levelId
-  res.send('Hello.')
+levelsRouter.delete('/:levelName', verifyUser, (req, res) => {
+  let levels = req.app.locals.levels as CustomLevelInfo[]
+  const matchedLevel = levels.filter(level => level.name === req.params.levelName)
+  if (matchedLevel.length === 0) {
+    res.json({ message: 'Level not found' })
+    return
+  }
+  const oldLevel = matchedLevel[0]
+  if (oldLevel.userId !== req.userId) {
+    res.status(403).json({ message: 'You are not the author of this level' })
+    return
+  }
+  levels = levels.filter(level => level.name !== req.params.levelName)
+  fs.rmdirSync(`./db/levels/${req.params.levelName}`, { recursive: true })
+  req.app.set('levels', levels)
+  res.json({ message: 'ok' })
 })

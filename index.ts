@@ -1,8 +1,9 @@
 import express from 'express'
-import { Sonolus } from 'sonolus-express'
+import { Sonolus, EngineInfo } from 'sonolus-express'
 import { config } from './config'
 import { uploadRouter } from './potato/upload'
-import { initLevelsDatabase } from './potato/reader'
+import { usersRouter } from './potato/users'
+import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
 import { levelsRouter } from './potato/levels'
 import { createTestsRouter } from './potato/tests'
 import * as OpenApiValidator from 'express-openapi-validator'
@@ -24,42 +25,12 @@ app.use('/', uploadRouter)
 // Inject levelsRouter
 app.use('/levels', levelsRouter)
 
-// Default handling is json
-app.use(express.json())
-
-// Add validator
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: './api.yaml',
-    validateRequests: {
-      removeAdditional: 'all'
-    }
-  }),
-)
-
-interface OpenApiError {
-  status?: number
-  errors?: string
-  message?: string
-}
-
-// Default error handler
-app.use((
-  err: OpenApiError,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  req: Request,
-  res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction
-) => {
-  res.status(err.status || 500).json({
-    message: err.message,
-    errors: err.errors,
-  })
-})
+// Inject usersRouter
+app.use('/users', usersRouter)
 
 // Set levels to express.js global (not recommended...)
 app.locals.levels = initLevelsDatabase()
+app.locals.users = initUsersDatabase()
 
 // Inject sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
@@ -83,6 +54,9 @@ try {
 } catch (e) {
   console.log('Sonolus-packer db was not valid!')
 }
+
+const defaultEngine : EngineInfo = potato.db.engines.filter(engine => engine.name === config.engine)[0]
+app.locals.defaultEngine = defaultEngine
 
 // Startup the server
 app.listen(config.port, () => {
