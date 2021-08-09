@@ -2,6 +2,7 @@ import express from 'express'
 import type { NextFunction, Request, Response } from 'express'
 import CustomUserInfo from '../types/user'
 import CustomLevelInfo from '../types/level'
+import verifyUser from './auth'
 import * as OpenApiValidator from 'express-openapi-validator'
 
 /**
@@ -22,7 +23,7 @@ usersRouter.use(
   }),
 )
 
-// I couldn't found express-opeapi-validator-error type
+// I couldn't found express-openapi-validator-error type
 interface OpenApiError {
   status?: number
   errors?: string
@@ -58,7 +59,10 @@ usersRouter.get('/:userId', (req, res) => {
 })
 
 // Edit user detail
-usersRouter.patch('/:userId', (req, res) => {
+usersRouter.patch('/:userId', verifyUser, (req, res) => {
+  if (req.params.userId != req.userId) {
+    return res.status(403).json({ message: 'Permission denied' })
+  }
   let users = req.app.locals.users as CustomUserInfo[]
   const reqUser = req.body as unknown as CustomUserInfo
   const matchedUser = users.filter(user => user.userId === req.params.userId)
@@ -69,6 +73,21 @@ usersRouter.patch('/:userId', (req, res) => {
   }
   users = users.filter(user => user.userId !== reqUser.userId)
   users.push(reqUser)
-  req.app.locals.users = users
+  req.app.set('users', users)
   res.json({ message: 'User edit success' })
+})
+
+// Get user detail
+usersRouter.get('/:userId/levels', verifyUser, (req, res) => {
+  const levels = req.app.locals.levels as CustomLevelInfo[]
+  let matchedLevels = levels.filter(level => level.userId === req.params.userId)
+  if (req.params.userId != req.userId) {
+    matchedLevels = matchedLevels.filter(level => level.public === true)
+  }
+  const page = req.query.page ? parseInt(req.query.page as string) : 0
+  const perPage = 4
+  res.json({
+    pageCount: Math.ceil(matchedLevels.length / perPage),
+    items: matchedLevels.slice(page * perPage, (page + 1) * perPage),
+  })
 })
