@@ -76,3 +76,18 @@ usersRouter.patch('/:userId', verifyUser, (req, res) => {
   req.app.set('users', users)
   res.json({ message: 'User edit success' })
 })
+
+// Get user detail
+usersRouter.get('/:userId/levels', verifyUser, (req, res) => {
+  const levels = req.app.locals.levels as CustomLevelInfo[]
+  let matchedLevels = levels.filter(level => level.userId === req.params.userId)
+  if (req.params.userId != req.userId) {
+    matchedLevels = matchedLevels.filter(level => level.public === true)
+  }
+  const page = req.query.page ? parseInt(req.query.page as string) : 0
+  const perPage = 4
+  res.json({
+    pageCount: Math.ceil(matchedLevels.length / perPage),
+    items: matchedLevels.slice(page * perPage, (page + 1) * perPage),
+  })
+})
