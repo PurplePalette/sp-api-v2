@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Sonolus, LevelInfo, defaultListHandler } from 'sonolus-express'
+import { Sonolus, LevelInfo } from 'sonolus-express'
 import { customAlphabet } from 'nanoid'
 import { initLevelInfo } from './reader'
 import { config } from '../config'
@@ -7,33 +7,25 @@ import verifyUser from './auth'
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
+export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
+  return levels.sort((n1: LevelInfo, n2: LevelInfo) => {
+    if (n1.updatedTime < n2.updatedTime) {
+      return 1
+    }
+    if (n1.updatedTime > n2.updatedTime) {
+      return -1
+    }
+    return 0
+  })
+}
+
 /**
  * Express: add/edit/delete level handler
 */
 export function installLevelsEndpoints(sonolus: Sonolus): void {
-  /* Handle server info */
-  sonolus.serverInfoHandler = (sonolus) => {
-    return {
-      levels: sonolus.db.levels.filter(level => level.public === true).slice(0, 5),
-      skins: sonolus.db.skins.slice(0, 5),
-      backgrounds: sonolus.db.backgrounds.slice(0, 5),
-      effects: sonolus.db.effects.slice(0, 5),
-      particles: sonolus.db.particles.slice(0, 5),
-      engines: sonolus.db.engines.slice(0, 5),
-    }
-  }
+  /* Server info  ...is handled by sonolus-express */
 
-  /* List level */
-  sonolus.levelListHandler = (sonolus, keywords, page) => {
-    const publicLevels = sonolus.db.levels.filter(l => l.public === true)
-    const resp = defaultListHandler(
-      publicLevels,
-      ['name', 'rating', 'title', 'artists', 'author', 'description'],
-      keywords,
-      page
-    )
-    return resp
-  }
+  /* List level ...is handled by sonolus-express */
 
   /* Add level */
   sonolus.app.post('/levels/:levelId', verifyUser, (req, res) => {

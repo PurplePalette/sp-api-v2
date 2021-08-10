@@ -38,7 +38,9 @@ app.use((
 // Install sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
 // Load database
-potato.db.levels = initLevelsDatabase()
+const levels = initLevelsDatabase()
+potato.db.levels = levels.filter(l => l.public === true)
+app.locals.tests = levels.filter(l => l.public === false)
 app.locals.users = initUsersDatabase()
 
 // Inject custom endpoints

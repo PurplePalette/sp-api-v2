@@ -5,17 +5,18 @@ import {
   LevelInfo, toLevelItem, toServerInfo,
   LocalizationText,
 } from 'sonolus-express'
-import type { Request, Response } from 'express'
+import { sortByUpdatedTime } from './levels'
+import type { Request } from 'express'
 import CustomUserInfo from '../types/user'
 
-function getTestingLevels (sonolus: Sonolus, req: Request, res: Response) : LevelInfo[] {
+function getTestingLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
   const users = req.app.locals.users as CustomUserInfo[]
   const userIds = users.filter(u => u.testId === req.params.testId)
   if (userIds.length === 0) {
-    res.status(404).json({ message: 'Specified test was not found' })
     return []
   }
-  const filteredLevels = sonolus.db.levels.filter(l => l.userId === userIds[0].userId)
+  const testingLevels = req.app.locals.tests as LevelInfo[]
+  const filteredLevels = testingLevels.filter(l => l.userId === userIds[0].userId)
   return filteredLevels
 }
 
@@ -26,8 +27,8 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
   /* Server info */
   sonolus.app.get('/tests/:testId/info', (req, res) => {
     req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
-    const filteredLevels = getTestingLevels(sonolus, req, res)
-    if (filteredLevels.length === 0) { return }
+    const filteredLevels = sortByUpdatedTime(getTestingLevels(sonolus, req))
+    if (filteredLevels.length === 0) { return res.status(404).json({message: 'No tests found'})}
     res.json(
       toServerInfo(
         {
@@ -44,8 +45,6 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
   sonolus.app.get('/tests/:testId/levels/list', (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
-      const filteredLevels = getTestingLevels(sonolus, req, res)
-      if (filteredLevels.length === 0) { return }
       const testsLevelListHandler = (
         sonolus: Sonolus,
         keywords: string | undefined,
@@ -53,7 +52,11 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
       ): {
         pageCount: number
         infos: LevelInfo[]
-      } => {
+        } => {
+        const filteredLevels = sortByUpdatedTime(getTestingLevels(sonolus, req))
+        if (filteredLevels.length === 0) {
+          return { pageCount: 0, infos: [] }
+        }
         return defaultListHandler(
           filteredLevels,
           ['name', 'rating', 'title', 'artists', 'author', 'description'],

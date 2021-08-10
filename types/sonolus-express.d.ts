@@ -1,46 +1,46 @@
 import { LevelInfo } from 'sonolus-express'
 
 declare module 'sonolus-express' {
-    interface LevelInfo extends LevelInfo {
+    interface LevelInfo {
         /**
         * 独自要素: 楽曲のジャンル
         */
-        'genre': string;
+        genre: string;
         /**
          * 独自要素: 楽曲が全体公開かどうか
          */
-        'public': boolean;
+        public: boolean;
         /**
          * 独自要素: 譜面作成者のユーザーID
          */
-        'userId': string;
+        userId: string;
         /**
          * 独自要素: 譜面内のノーツ数
          */
-        'notes': number;
+        notes: number;
         /**
          * 独自要素: データを作成したエポックミリ秒(ソート用)
          */
-        'createdTime': number;
+        createdTime: number;
         /**
          * 独自要素: データを更新したエポックミリ秒(ソート用)
          */
-        'updatedTime': number;
+        updatedTime: number;
         /**
          * 独自要素: サムネのハッシュ値(DBを兼ねるため)
          */
-        'coverHash': string;
+        coverHash: string;
         /**
          * 独自要素: データのハッシュ(DBを兼ねるため)
          */
-        'dataHash': string;
+        dataHash: string;
         /**
          * 独自要素: BGMのハッシュ(DBを兼ねるため)
          */
-        'bgmHash': string;
+        bgmHash: string;
         /**
          * 独自要素: プレイされた回数
          */
-        'playCount': number;
+        playCount: number;
     }
 }
