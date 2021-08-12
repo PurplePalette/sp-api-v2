@@ -1,8 +1,10 @@
-import express from 'express'
+import { Sonolus } from 'sonolus-express'
 import multer from 'multer'
 import path from 'path'
 import { config } from '../config'
 import { customAlphabet } from 'nanoid'
+
+const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
 const acceptableMimeTypes = [
   'audio/mp3',
@@ -12,7 +14,6 @@ const acceptableMimeTypes = [
   'image/jpeg',
   'image/png',
 ]
-const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -23,7 +24,7 @@ const storage = multer.diskStorage({
   },
 })
 
-export const upload = multer({
+const upload = multer({
   storage: storage,
   fileFilter: (_, file, cb) => {
     // Validate file extension
@@ -43,24 +44,24 @@ export const upload = multer({
   },
 }).single('file')
 
-export const uploadRouter = express.Router()
-
-// Receive file upload
-uploadRouter.post('/upload', (req, res) => {
-  upload(req, res, function (err) {
-    // This upload handler needs mimetype and filename
-    // If request from python with just binary, it return success but don't save file.
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-      console.log(err)
-      res.status(400)
-      res.send('Requested file was not valid.')
-    } else if (err) {
-      // An unknown error occurred when uploading.
-      res.send(err)
-      res.status(500)
-      res.send('Internal server error. Please try again.')
-    }
-    res.send('File saved.')
+export function installUploadEndpoints (sonolus: Sonolus) : void {
+  // Receive file upload
+  sonolus.app.post('/upload', (req, res) => {
+    upload(req, res, function (err) {
+      // This upload handler needs mimetype and filename
+      // If request from python with just binary, it return success but don't save file.
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        console.log(err)
+        res.status(400)
+        res.send('Requested file was not valid.')
+      } else if (err) {
+        // An unknown error occurred when uploading.
+        res.send(err)
+        res.status(500)
+        res.send('Internal server error. Please try again.')
+      }
+      res.send('File saved.')
+    })
   })
-})
+}

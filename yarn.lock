@@ -2491,10 +2491,17 @@ sonolus-express@^0.1.4:
   dependencies:
     ajv "^8.6.2"
 
-sonolus-pack@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/sonolus-pack/-/sonolus-pack-0.1.0.tgz#f92edd2ae10eaaf487d417f3650dbca5a0810d3c"
-  integrity sha512-5Yra4z8nf+eteeBgLEC70uXYB4LYKm6e6s/vylwKx/9ofzrflz1NeT/bYx8u1uRTyWqeRnQO8v6OyWkBBcdYCg==
+sonolus-express@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/sonolus-express/-/sonolus-express-0.2.0.tgz#be4af57bc5c8bb0fe65af4a382fa25278d07da75"
+  integrity sha512-buBtXHJ/WIoM0aaPycGombnoR1uqqtXDv4bWXUY/9vfFnOT5ND9kgbL4n/KZe6/BqEcvZydYa4EOQ26KcXLgmw==
+  dependencies:
+    ajv "^8.6.2"
+
+sonolus-pack@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/sonolus-pack/-/sonolus-pack-0.2.0.tgz#92d44c3398a39ce95519fe2d805361ae010ab970"
+  integrity sha512-WhKsp+ye3FopA4agr5i/rIim4pg5klxPwLhGXTh0CgGVOp86u/6FUHdTlUy+7RCEBjQp/KsFWDXzZvHe7HoKBA==
   dependencies:
     ajv "^8.6.0"
     commander "^7.2.0"

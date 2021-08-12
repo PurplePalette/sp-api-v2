@@ -2,9 +2,13 @@ import * as firebase from 'firebase-admin'
 import { firebaseParams } from '../config'
 import type { Request, Response, NextFunction } from 'express'
 
-firebase.initializeApp({
-  credential: firebase.credential.cert(firebaseParams),
-})
+try {
+  firebase.initializeApp({
+    credential: firebase.credential.cert(firebaseParams),
+  })
+} catch (err) {
+  console.log('Failed to initialize firebase, auth wont work')
+}
 
 export async function verifyToken (idToken: string) : Promise<string> {
   const decodedToken = await firebase.auth().verifyIdToken(idToken)

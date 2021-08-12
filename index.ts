@@ -1,14 +1,13 @@
 import express from 'express'
-import { Sonolus, EngineInfo } from 'sonolus-express'
-import { config } from './config'
-import { uploadRouter } from './potato/upload'
-import { usersRouter } from './potato/users'
-import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
-import { levelsRouter } from './potato/levels'
-import { createTestsRouter } from './potato/tests'
 import * as OpenApiValidator from 'express-openapi-validator'
-import type { NextFunction, Request, Response } from 'express'
-import CustomLevelInfo from './types/level'
+import { Sonolus } from 'sonolus-express'
+import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
+import { installUploadEndpoints } from './potato/upload'
+import { installStaticEndpoints } from './potato/static'
+import { installLevelsEndpoints } from './potato/levels'
+import { installTestsEndpoints } from './potato/tests'
+import { installUsersEndpoints } from './potato/users'
+import { config } from './config'
 
 /*
  * Sonolus-uploader-core-2 Main class
@@ -19,34 +18,37 @@ import CustomLevelInfo from './types/level'
 
 const app = express()
 
-// Inject uploadRouter
-app.use('/', uploadRouter)
+// Add validator
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec: './api.yaml',
+    validateRequests: { removeAdditional: 'all' }
+  }),
+)
+app.use((
+  err: { status?: number, errors?: string, message?: string },
+  req: express.Request, res: express.Response, next: express.NextFunction
+) => {
+  res.status(err.status || 500).json({
+    message: err.message,
+    errors: err.errors,
+  })
+})
 
-// Inject levelsRouter
-app.use('/levels', levelsRouter)
-
-// Inject usersRouter
-app.use('/users', usersRouter)
-
-// Set levels to express.js global (not recommended...)
-app.locals.levels = initLevelsDatabase()
+// Install sonolus-express
+const potato = new Sonolus(app, config.sonolusOptions)
+// Load database
+const levels = initLevelsDatabase()
+potato.db.levels = levels.filter(l => l.public === true)
+app.locals.tests = levels.filter(l => l.public === false)
 app.locals.users = initUsersDatabase()
 
-// Inject sonolus-express
-const potato = new Sonolus(app, config.sonolusOptions)
-potato.db.levels = app.locals.levels as CustomLevelInfo[]
-
-// Inject testsRouter
-app.use('/tests', createTestsRouter(potato))
-
-// Add static folder (for use with sonolus-server-landing)
-app.use('/', express.static(config.static))
-
-// Add Open-API Spec
-app.use('/spec', express.static('./api.yaml'))
-
-// Add static folder (for use with upload)
-app.use('/repository/', express.static('./db/levels/'))
+// Inject custom endpoints
+installLevelsEndpoints(potato)
+installTestsEndpoints(potato)
+installUsersEndpoints(potato)
+installUploadEndpoints(potato)
+installStaticEndpoints(potato)
 
 // Load sonolus-pack folder
 try {
@@ -54,9 +56,6 @@ try {
 } catch (e) {
   console.log('Sonolus-packer db was not valid!')
 }
-
-const defaultEngine : EngineInfo = potato.db.engines.filter(engine => engine.name === config.engine)[0]
-app.locals.defaultEngine = defaultEngine
 
 // Startup the server
 app.listen(config.port, () => {

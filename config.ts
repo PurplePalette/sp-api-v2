@@ -58,7 +58,7 @@ export const config : GlobalConfig = {
   engine: 'pjsekai',
   maxSize: 15 * 1024 * 1024,
   sonolusOptions: {
-    version: '0.5.4',
+    version: '0.5.5',
     basePath: '',
     fallbackLocale: 'ja'
   }
