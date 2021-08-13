@@ -11,11 +11,14 @@ import CustomUserInfo from '../types/user'
 import verifyUser from './auth'
 
 function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
-  const levels = sonolus.db.levels.filter(level => level.userId === req.userId)
-  if (levels.length === 0) {
+  let matchedLevels = sonolus.db.levels.filter(level => level.userId === req.params.userId)
+  if (req.params.userId !== req.userId) {
+    matchedLevels = matchedLevels.filter(level => level.public === true)
+  }
+  if (matchedLevels.length === 0) {
     return []
   }
-  return levels
+  return matchedLevels
 }
 
 export function installUsersEndpoints(sonolus: Sonolus): void {
@@ -72,10 +75,6 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   sonolus.app.get('/users/:userId/levels/list', (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
-      let matchedLevels = sonolus.db.levels.filter(level => level.userId === req.params.userId)
-      if (req.params.userId !== req.userId) {
-        matchedLevels = matchedLevels.filter(level => level.public === false)
-      }
       const userLevelListHandler = (
         sonolus: Sonolus,
         keywords: string | undefined,
@@ -85,7 +84,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
         infos: LevelInfo[]
       } => {
         return defaultListHandler(
-          sortByUpdatedTime(matchedLevels),
+          sortByUpdatedTime(getUsersLevels(sonolus, req)),
           ['name', 'rating', 'title', 'artists', 'author', 'description'],
           keywords,
           page
@@ -96,7 +95,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   })
 
   /* Get level */
-  sonolus.app.get('/users/:userId/levels/:levelName', (req, res, next) => {
+  sonolus.app.get('/users/:userId/levels/:name', (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       await detailsRouteHandler(sonolus, sonolus.levelDetailsHandler, toLevelItem, req, res)

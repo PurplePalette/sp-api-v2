@@ -15,7 +15,7 @@ function getTestingLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
   if (userIds.length === 0) {
     return []
   }
-  const filteredLevels = sonolus.db.levels.filter(l => l.userId === userIds[0].userId)
+  const filteredLevels = sonolus.db.levels.filter(l => l.userId === userIds[0].userId && l.public === false)
   return filteredLevels
 }
 
@@ -68,7 +68,7 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
   })
 
   /* Get level */
-  sonolus.app.get('/tests/:testId/levels/:levelName', (req, res, next) => {
+  sonolus.app.get('/tests/:testId/levels/:name', (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       await detailsRouteHandler(sonolus, sonolus.levelDetailsHandler, toLevelItem, req, res)
