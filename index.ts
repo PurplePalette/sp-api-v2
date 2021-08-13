@@ -1,6 +1,7 @@
 import express from 'express'
 import * as OpenApiValidator from 'express-openapi-validator'
 import logger from 'morgan'
+import cors from 'cors'
 import { Sonolus } from 'sonolus-express'
 import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
 import { installUploadEndpoints } from './potato/upload'
@@ -19,7 +20,14 @@ import { config } from './config'
 
 const app = express()
 
+// Add logger
 app.use(logger('tiny'))
+
+// Add CORS support
+app.use(cors({
+  origin: ['https://potato.purplepalette.net', 'http://localhost:8080'],
+  optionsSuccessStatus: 200
+}))
 
 // Add validator
 app.use(
