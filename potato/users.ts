@@ -41,16 +41,13 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   })
 
   // Get user detail
-  sonolus.app.get('/users/:userId/levels', verifyUser, (req, res, next) => {
+  sonolus.app.get('/users/:userId/levels/list', (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       let matchedLevels = sonolus.db.levels.filter(level => level.userId === req.params.userId)
-      if (req.params.userId == req.userId) {
-        const testingLevels = req.app.locals.tests as LevelInfo[]
-        const filteredLevels = testingLevels.filter(l => l.userId === req.params.userId)
-        matchedLevels = matchedLevels.concat(filteredLevels)
+      if (req.params.userId !== req.userId) {
+        matchedLevels = matchedLevels.filter(level => level.public === false)
       }
-      if (matchedLevels.length === 0) { return }
       const userLevelListHandler = (
         sonolus: Sonolus,
         keywords: string | undefined,
