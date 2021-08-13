@@ -1,6 +1,7 @@
 import {
   Sonolus,
   defaultListHandler, listRouteHandler,
+  detailsRouteHandler,
   toServerInfo,
   LevelInfo, toLevelItem, LocalizationText
 } from 'sonolus-express'
@@ -91,6 +92,14 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
         )
       }
       await listRouteHandler(sonolus, userLevelListHandler, toLevelItem, req, res)
+    })().catch(next)
+  })
+
+  /* Get level */
+  sonolus.app.get('/users/:userId/levels/:levelName', (req, res, next) => {
+    (async () => {
+      req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
+      await detailsRouteHandler(sonolus, sonolus.levelDetailsHandler, toLevelItem, req, res)
     })().catch(next)
   })
 }

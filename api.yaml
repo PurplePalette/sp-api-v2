@@ -991,6 +991,8 @@ paths:
         It will raise 404 if the level is not registered in this server
       tags:
         - users
+      parameters:
+        - $ref: '#/components/parameters/localization'
   '/users/{userId}/particles/list':
     get:
       summary: Get particles for test
