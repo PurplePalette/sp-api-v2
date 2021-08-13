@@ -60,6 +60,8 @@ paths:
       description: |-
         It returns specified background info
         It will raise 404 if the background is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
   /effects/list:
     get:
       summary: Get effect list
@@ -104,6 +106,8 @@ paths:
       description: |-
         It returns specified effect info
         It will raise 404 if the effect is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
   /engines/list:
     get:
       summary: Get engine list
@@ -148,6 +152,8 @@ paths:
       description: |-
         It returns specified engine info
         It will raise 404 if the engine is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
   /levels/list:
     get:
       summary: Get level list
@@ -285,6 +291,8 @@ paths:
       description: |-
         It returns specified particle info
         It will raise 404 if the particle is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
   /skins/list:
     get:
       summary: Get skin list
@@ -329,6 +337,8 @@ paths:
       description: |-
         It returns specified skin info
         It will raise 404 if the skin is not registered in this server
+      parameters:
+        - $ref: '#/components/parameters/localization'
   /info:
     get:
       summary: Get server info
@@ -345,6 +355,8 @@ paths:
       description: |-
         It returns small list of all infos registered in this server
         (It should be trimed if the server has too many items)
+      parameters:
+        - $ref: '#/components/parameters/localization'
   '/users/{userId}':
     parameters:
       - schema:
@@ -419,6 +431,8 @@ paths:
                 $ref: '#/components/schemas/ServerInfo'
       operationId: getTestServerInfo
       description: テスト個別の情報一覧を返します
+      parameters:
+        - $ref: '#/components/parameters/localization'
     parameters:
       - schema:
           type: string
@@ -1091,6 +1105,358 @@ paths:
       tags:
         - uploads
       description: 独自要素
+  '/repository/EffectData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEffectData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEffectData
+      description: It returnes specified resource data.
+  '/repository/BackgroundConfiguration/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundConfiguration
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryBackgroundConfiguration
+      description: It return specified resource data.
+  '/repository/BackgroundData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryBackgroundData
+      description: It return specified resource data.
+  '/repository/BackgroundImage/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundImage
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryBackgroundImage
+      description: It return specified resource data.
+  '/repository/BackgroundThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryBackgroundThumbnail
+      description: It return specified resource data.
+  '/repository/EffectClip/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEffectClip
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEffectClip
+      description: It return specified resource data.
+  '/repository/EffectThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEffectThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEffectThumbnail
+      description: It return specified resource data.
+  '/repository/EngineConfiguration/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEngineConfiguration
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEngineConfiguration
+      description: It return specified resource data.
+  '/repository/EngineData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEngineData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEngineData
+      description: It return specified resource data.
+  '/repository/EngineThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetEngineThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryEngineThumbnail
+      description: It return specified resource data.
+  '/repository/LevelBgm/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetLevelBgm
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelBgm
+      description: It return specified resource data.
+  '/repository/LevelCover/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetLevelCover
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelCover
+      description: It return specified resource data.
+  '/repository/LevelData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetLevelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelData
+      description: It return specified resource data.
+  '/repository/ParticleData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetParticleData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryParticleData
+      description: It return specified resource data.
+  '/repository/ParticleTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetParticleTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryParticleTexture
+      description: It return specified resource data.
+  '/repository/ParticleThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetParticleThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryParticleThumbnail
+      description: It return specified resource data.
+  '/repository/SkinData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetSkinData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositorySkinData
+      description: It return specified resource data.
+  '/repository/SkinTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetSkinTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositorySkinTexture
+      description: It return specified resource data.
+  '/repository/SkinThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+    get:
+      summary: GetSkinThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositorySkinThumbnail
+      description: It return specified resource data.
+  '/repository/{levelName}/data.gz':
+    parameters:
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelData
+      description: It return specified resource data.
+  '/repository/{levelName}/bgm.mp3':
+    parameters:
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelBgm
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelBgm
+      description: It return specified resource data.
+  '/repository/{levelName}/cover.png':
+    parameters:
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelCover
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getRepositoryLevelCover
+      description: It return specified resource data.
 components:
   schemas:
     Level:
@@ -2057,10 +2423,10 @@ components:
       required: false
       schema:
         type: integer
+        default: 0
+        example: 0
         minimum: 0
         maximum: 10000
-        example: 1
-        default: 0
       description: It filters items for pagination if possible
     keywords:
       name: keywords
@@ -2073,6 +2439,15 @@ components:
         minLength: 0
       description: It filters items for search from list if possible
       allowEmptyValue: true
+    version:
+      name: sonolus-version
+      in: header
+      required: true
+      schema:
+        type: string
+        example: 0.5.5
+        default: 0.5.5
+      description: Sonolus client version
 tags:
   - name: backgrounds
   - name: effects
@@ -2080,6 +2455,7 @@ tags:
   - name: info
   - name: levels
   - name: particles
+  - name: repository
   - name: skins
   - name: tests
   - name: uploads
