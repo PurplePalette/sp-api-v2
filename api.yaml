@@ -439,165 +439,6 @@ paths:
         name: testId
         in: path
         required: true
-  '/tests/{testId}/backgrounds/list':
-    get:
-      summary: Get backgrounds for test
-      tags:
-        - tests
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetBackgroundListResponse'
-      operationId: getTestsBackgrounds
-      description: 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-  '/tests/{testId}/backgrounds/{backgroundName}':
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: backgroundName
-        in: path
-        required: true
-    get:
-      summary: Get testing background
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetBackgroundResponse'
-        '404':
-          description: Not Found
-      operationId: getBackgroundTest
-      description: |-
-        It returns specified background info
-        It will raise 404 if the background is not registered in this server
-      tags:
-        - tests
-  '/tests/{testId}/effects/list':
-    get:
-      summary: Get effects for test
-      tags:
-        - tests
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEffectListResponse'
-      operationId: getTestsEffects
-      description: 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-  '/tests/{testId}/effects/{effectName}':
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: effectName
-        in: path
-        required: true
-    get:
-      summary: Get testing effect
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEffectResponse'
-        '404':
-          description: Not Found
-      operationId: getEffectTest
-      description: |-
-        It returns specified effect info
-        It will raise 404 if the effect is not registered in this server
-      tags:
-        - tests
-  '/tests/{testId}/engines/list':
-    get:
-      summary: Get engines for test
-      tags:
-        - tests
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEngineListResponse'
-      operationId: getTestsEngines
-      description: 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-  '/tests/{testId}/engines/{engineName}':
-    parameters:
-      - schema:
-          type: string
-        name: testId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: engineName
-        in: path
-        required: true
-    get:
-      summary: Get testing engine
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEngineResponse'
-        '404':
-          description: Not Found
-      operationId: getEngineTest
-      description: |-
-        It returns specified engine info
-        It will raise 404 if the engine is not registered in this server
-      tags:
-        - tests
   '/tests/{testId}/levels/list':
     get:
       summary: Get levels for test
@@ -651,84 +492,429 @@ paths:
         It will raise 404 if the level is not registered in this server
       tags:
         - tests
-  '/tests/{testId}/particles/list':
-    get:
-      summary: Get particles for test
-      tags:
-        - tests
       parameters:
         - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetParticleListResponse'
-      operationId: getTestsParticles
-      description: 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
+  '/tests/{testId}/repository/EffectData/{resourceName}':
     parameters:
       - schema:
           type: string
-        name: testId
-        in: path
-        required: true
-  '/tests/{testId}/particles/{particleName}':
-    parameters:
-      - schema:
-          type: string
-        name: testId
+        name: resourceName
         in: path
         required: true
       - schema:
           type: string
-        name: particleName
+        name: testId
         in: path
         required: true
     get:
-      summary: Get testing particle
+      summary: GetEffectData
+      tags:
+        - repository
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetParticleResponse'
-        '404':
-          description: Not Found
-      operationId: getParticleTest
-      description: |-
-        It returns specified particle info
-        It will raise 404 if the particle is not registered in this server
-      tags:
-        - tests
-  '/tests/{testId}/skins/list':
+      operationId: getTestRepositoryEffectData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/BackgroundConfiguration/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
     get:
-      summary: Get skins for test
+      summary: GetBackgroundConfiguration
       tags:
-        - tests
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
+        - repository
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetSkinListResponse'
-      operationId: getTestsSkins
-      description: 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
+      operationId: getTestRepositoryBackgroundConfiguration
+      description: It return specified resource data.
+  '/tests/{testId}/repository/BackgroundData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryBackgroundData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/BackgroundImage/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundImage
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryBackgroundImage
+      description: It return specified resource data.
+  '/tests/{testId}/repository/BackgroundThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryBackgroundThumbnail
+      description: It return specified resource data.
+  '/tests/{testId}/repository/EffectClip/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetEffectClip
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryEffectClip
+      description: It return specified resource data.
+  '/tests/{testId}/repository/EffectThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetEffectThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryEffectThumbnail
+      description: It return specified resource data.
+  '/tests/{testId}/repository/EngineConfiguration/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetEngineConfiguration
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryEngineConfiguration
+      description: It return specified resource data.
+  '/tests/{testId}/repository/EngineData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetEngineData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryEngineData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/EngineThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetEngineThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryEngineThumbnail
+      description: It return specified resource data.
+  '/tests/{testId}/repository/LevelBgm/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetLevelBgm
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryLevelBgm
+      description: It return specified resource data.
+  '/tests/{testId}/repository/LevelCover/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetLevelCover
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryLevelCover
+      description: It return specified resource data.
+  '/tests/{testId}/repository/LevelData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetLevelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryLevelData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/ParticleData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetParticleData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryParticleData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/ParticleTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetParticleTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryParticleTexture
+      description: It return specified resource data.
+  '/tests/{testId}/repository/ParticleThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetParticleThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryParticleThumbnail
+      description: It return specified resource data.
+  '/tests/{testId}/repository/SkinData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetSkinData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositorySkinData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/SkinTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetSkinTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositorySkinTexture
+      description: It return specified resource data.
+  '/tests/{testId}/repository/SkinThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+    get:
+      summary: GetSkinThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositorySkinThumbnail
+      description: It return specified resource data.
+  '/tests/{testId}/repository/{levelName}/data.gz':
     parameters:
       - schema:
           type: string
         name: testId
         in: path
         required: true
-  '/tests/{testId}/skins/{skinName}':
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryPathLevelData
+      description: It return specified resource data.
+  '/tests/{testId}/repository/{levelName}/bgm.mp3':
     parameters:
       - schema:
           type: string
@@ -737,26 +923,39 @@ paths:
         required: true
       - schema:
           type: string
-        name: skinName
+        name: levelName
         in: path
         required: true
     get:
-      summary: Get testing skin
+      summary: Get levelBgm
+      tags:
+        - repository
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetSkinResponse'
-        '404':
-          description: Not Found
-      operationId: getSkinTest
-      description: |-
-        It returns specified skin info
-        It will raise 404 if the skin is not registered in this server
+      operationId: getTestRepositoryPathLevelBgm
+      description: It return specified resource data.
+  '/tests/{testId}/repository/{levelName}/cover.png':
+    parameters:
+      - schema:
+          type: string
+        name: testId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelCover
       tags:
-        - tests
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getTestRepositoryPathLevelCover
+      description: It return specified resource data.
   '/users/{userId}/info':
     get:
       summary: Get user server info
@@ -771,171 +970,14 @@ paths:
                 $ref: '#/components/schemas/ServerInfo'
       operationId: getUserServerInfo
       description: ユーザー個別の情報一覧を返します
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-  '/users/{userId}/backgrounds/list':
-    get:
-      summary: Get backgrounds for test
-      tags:
-        - users
       parameters:
         - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetBackgroundListResponse'
-      operationId: getUsersBackgrounds
-      description: ユーザー個別用エンドポイント/ 背景一覧を返す
     parameters:
       - schema:
           type: string
         name: userId
         in: path
         required: true
-  '/users/{userId}/backgrounds/{backgroundName}':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: backgroundName
-        in: path
-        required: true
-    get:
-      summary: Get users background
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetBackgroundResponse'
-        '404':
-          description: Not Found
-      operationId: getUsersBackground
-      description: |-
-        It returns specified background info
-        It will raise 404 if the background is not registered in this server
-      tags:
-        - users
-  '/users/{userId}/effects/list':
-    get:
-      summary: Get effects for test
-      tags:
-        - users
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEffectListResponse'
-      operationId: getUsersEffects
-      description: ユーザー個別用エンドポイント/ エフェクト一覧を返す
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-  '/users/{userId}/effects/{effectName}':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: effectName
-        in: path
-        required: true
-    get:
-      summary: Get users effect
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEffectResponse'
-        '404':
-          description: Not Found
-      operationId: getUsersEffect
-      description: |-
-        It returns specified effect info
-        It will raise 404 if the effect is not registered in this server
-      tags:
-        - users
-  '/users/{userId}/engines/list':
-    get:
-      summary: Get engines for test
-      tags:
-        - users
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEngineListResponse'
-      operationId: getUsersEngines
-      description: ユーザー個別用エンドポイント/ エンジン一覧を返す
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-  '/users/{userId}/engines/{engineName}':
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-      - schema:
-          type: string
-        name: engineName
-        in: path
-        required: true
-    get:
-      summary: Get users engine
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetEngineResponse'
-        '404':
-          description: Not Found
-      operationId: getUsersEngine
-      description: |-
-        It returns specified engine info
-        It will raise 404 if the engine is not registered in this server
-      tags:
-        - users
   '/users/{userId}/levels/list':
     get:
       summary: Get levels for test
@@ -989,84 +1031,30 @@ paths:
         It will raise 404 if the level is not registered in this server
       tags:
         - users
-  '/users/{userId}/particles/list':
-    get:
-      summary: Get particles for test
-      tags:
-        - users
       parameters:
         - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetParticleListResponse'
-      operationId: getUsersParticles
-      description: ユーザー個別用エンドポイント/ パーティクル一覧を返す
+  '/users/{userId}/repository/EffectData/{resourceName}':
     parameters:
       - schema:
           type: string
-        name: userId
-        in: path
-        required: true
-  '/users/{userId}/particles/{particleName}':
-    parameters:
-      - schema:
-          type: string
-        name: userId
+        name: resourceName
         in: path
         required: true
       - schema:
           type: string
-        name: particleName
+        name: userId
         in: path
         required: true
     get:
-      summary: Get users particle
+      summary: GetEffectData
+      tags:
+        - repository
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetParticleResponse'
-        '404':
-          description: Not Found
-      operationId: getUsersParticle
-      description: |-
-        It returns specified particle info
-        It will raise 404 if the particle is not registered in this server
-      tags:
-        - users
-  '/users/{userId}/skins/list':
-    get:
-      summary: Get skins for test
-      tags:
-        - users
-      parameters:
-        - $ref: '#/components/parameters/localization'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/keywords'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetSkinListResponse'
-      operationId: getUsersSkins
-      description: ユーザー個別用エンドポイント/ スキン一覧を返す
-    parameters:
-      - schema:
-          type: string
-        name: userId
-        in: path
-        required: true
-  '/users/{userId}/skins/{skinName}':
+      operationId: getUserRepositoryEffectData
+      description: It return specified resource data.
+  '/users/{userId}/repository/BackgroundConfiguration/{resourceName}':
     parameters:
       - schema:
           type: string
@@ -1075,26 +1063,438 @@ paths:
         required: true
       - schema:
           type: string
-        name: skinName
+        name: resourceName
         in: path
         required: true
     get:
-      summary: Get users skin
+      summary: GetBackgroundConfiguration
+      tags:
+        - repository
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetSkinResponse'
-        '404':
-          description: Not Found
-      operationId: getUsersSkin
-      description: |-
-        It returns specified skin info
-        It will raise 404 if the skin is not registered in this server
+      operationId: getUserRepositoryBackgroundConfiguration
+      description: It return specified resource data.
+  '/users/{userId}/repository/BackgroundData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundData
       tags:
-        - users
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryBackgroundData
+      description: It return specified resource data.
+  '/users/{userId}/repository/BackgroundImage/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundImage
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryBackgroundImage
+      description: It return specified resource data.
+  '/users/{userId}/repository/BackgroundThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetBackgroundThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryBackgroundThumbnail
+      description: It return specified resource data.
+  '/users/{userId}/repository/EffectClip/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetEffectClip
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryEffectClip
+      description: It return specified resource data.
+  '/users/{userId}/repository/EffectThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetEffectThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryEffectThumbnail
+      description: It return specified resource data.
+  '/users/{userId}/repository/EngineConfiguration/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetEngineConfiguration
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryEngineConfiguration
+      description: It return specified resource data.
+  '/users/{userId}/repository/EngineData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetEngineData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryEngineData
+      description: It return specified resource data.
+  '/users/{userId}/repository/EngineThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetEngineThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryEngineThumbnail
+      description: It return specified resource data.
+  '/users/{userId}/repository/LevelBgm/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetLevelBgm
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryLevelBgm
+      description: It return specified resource data.
+  '/users/{userId}/repository/LevelCover/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetLevelCover
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryLevelCover
+      description: It return specified resource data.
+  '/users/{userId}/repository/LevelData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetLevelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryLevelData
+      description: It return specified resource data.
+  '/users/{userId}/repository/ParticleData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetParticleData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryParticleData
+      description: It return specified resource data.
+  '/users/{userId}/repository/ParticleTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetParticleTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryParticleTexture
+      description: It return specified resource data.
+  '/users/{userId}/repository/ParticleThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetParticleThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryParticleThumbnail
+      description: It return specified resource data.
+  '/users/{userId}/repository/SkinData/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetSkinData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositorySkinData
+      description: It return specified resource data.
+  '/users/{userId}/repository/SkinTexture/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetSkinTexture
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositorySkinTexture
+      description: It return specified resource data.
+  '/users/{userId}/repository/SkinThumbnail/{resourceName}':
+    parameters:
+      - schema:
+          type: string
+        name: resourceName
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: GetSkinThumbnail
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositorySkinThumbnail
+      description: It return specified resource data.
+  '/users/{userId}/repository/{levelName}/data.gz':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelData
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryPathLevelData
+      description: It return specified resource data.
+  '/users/{userId}/repository/{levelName}/bgm.mp3':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelBgm
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryPathLevelBgm
+      description: It return specified resource data.
+  '/users/{userId}/repository/{levelName}/cover.png':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: levelName
+        in: path
+        required: true
+    get:
+      summary: Get levelCover
+      tags:
+        - repository
+      responses:
+        '200':
+          description: OK
+      operationId: getUserRepositoryPathLevelCover
+      description: It return specified resource data.
   /upload:
     post:
       summary: Upload file
@@ -1423,7 +1823,7 @@ paths:
       responses:
         '200':
           description: OK
-      operationId: getRepositoryLevelData
+      operationId: getRepositoryPathLevelData
       description: It return specified resource data.
   '/repository/{levelName}/bgm.mp3':
     parameters:
@@ -1439,7 +1839,7 @@ paths:
       responses:
         '200':
           description: OK
-      operationId: getRepositoryLevelBgm
+      operationId: getRepositoryPathLevelBgm
       description: It return specified resource data.
   '/repository/{levelName}/cover.png':
     parameters:
@@ -1455,7 +1855,7 @@ paths:
       responses:
         '200':
           description: OK
-      operationId: getRepositoryLevelCover
+      operationId: getRepositoryPathLevelCover
       description: It return specified resource data.
 components:
   schemas:

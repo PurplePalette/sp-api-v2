@@ -11,4 +11,8 @@ export function installStaticEndpoints (sonolus: Sonolus) : void {
 
   // Add static folder (for use with upload)
   sonolus.app.use('/repository/', express.static('./db/levels/'))
+
+  sonolus.app.use('/users/:userId/repository/', express.static('./db/levels/'))
+
+  sonolus.app.use('/tests/:testId/repository/', express.static('./db/levels/'))
 }
