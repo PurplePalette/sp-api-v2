@@ -15,8 +15,7 @@ function getTestingLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
   if (userIds.length === 0) {
     return []
   }
-  const testingLevels = req.app.locals.tests as LevelInfo[]
-  const filteredLevels = testingLevels.filter(l => l.userId === userIds[0].userId)
+  const filteredLevels = sonolus.db.levels.filter(l => l.userId === userIds[0].userId)
   return filteredLevels
 }
 
