@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Sonolus, LevelInfo } from 'sonolus-express'
+import { Sonolus, LevelInfo, defaultListHandler } from 'sonolus-express'
 import { customAlphabet } from 'nanoid'
 import { initLevelInfo } from './reader'
 import { config } from '../config'
@@ -24,8 +24,29 @@ export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
 */
 export function installLevelsEndpoints(sonolus: Sonolus): void {
   /* Server info  ...is handled by sonolus-express */
+  const publicLevels = sonolus.db.levels.filter(level => level.public === true)
+  sonolus.serverInfoHandler = (sonolus) => {
+    return {
+      levels: sortByUpdatedTime(publicLevels).slice(0, 5),
+      skins: sonolus.db.skins.slice(0, 5),
+      backgrounds: sonolus.db.backgrounds.slice(0, 5),
+      effects: sonolus.db.effects.slice(0, 5),
+      particles: sonolus.db.particles.slice(0, 5),
+      engines: sonolus.db.engines.slice(0, 5),
+    }
+  }
 
-  /* List level ...is handled by sonolus-express */
+  /* List level */
+  sonolus.levelListHandler = (sonolus, keywords, page) => {
+    const publicLevels = sonolus.db.levels.filter(l => l.public === true)
+    const resp = defaultListHandler(
+      sortByUpdatedTime(publicLevels),
+      ['name', 'rating', 'title', 'artists', 'author', 'description'],
+      keywords,
+      page
+    )
+    return resp
+  }
 
   /* Add level */
   sonolus.app.post('/levels/:levelId', verifyUser, (req, res) => {
