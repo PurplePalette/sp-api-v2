@@ -1,5 +1,6 @@
 import express from 'express'
 import * as OpenApiValidator from 'express-openapi-validator'
+import logger from 'morgan'
 import { Sonolus } from 'sonolus-express'
 import { initLevelsDatabase, initUsersDatabase } from './potato/reader'
 import { installUploadEndpoints } from './potato/upload'
@@ -18,6 +19,8 @@ import { config } from './config'
 
 const app = express()
 
+app.use(logger('tiny'))
+
 // Add validator
 app.use(
   OpenApiValidator.middleware({
@@ -29,6 +32,7 @@ app.use((
   err: { status?: number, errors?: string, message?: string },
   req: express.Request, res: express.Response, next: express.NextFunction
 ) => {
+  // console.log(err)
   res.status(err.status || 500).json({
     message: err.message,
     errors: err.errors,
@@ -42,11 +46,11 @@ potato.db.levels = initLevelsDatabase()
 app.locals.users = initUsersDatabase()
 
 // Inject custom endpoints
+installStaticEndpoints(potato)
 installLevelsEndpoints(potato)
 installTestsEndpoints(potato)
 installUsersEndpoints(potato)
 installUploadEndpoints(potato)
-installStaticEndpoints(potato)
 
 // Load sonolus-pack folder
 try {
