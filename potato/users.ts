@@ -1,13 +1,40 @@
 import {
   Sonolus,
   defaultListHandler, listRouteHandler,
+  toServerInfo,
   LevelInfo, toLevelItem, LocalizationText
 } from 'sonolus-express'
+import type { Request } from 'express'
 import { sortByUpdatedTime } from './levels'
 import CustomUserInfo from '../types/user'
 import verifyUser from './auth'
 
+function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
+  const levels = sonolus.db.levels.filter(level => level.userId === req.userId)
+  if (levels.length === 0) {
+    return []
+  }
+  return levels
+}
+
 export function installUsersEndpoints(sonolus: Sonolus): void {
+  // User server info
+  sonolus.app.get('/users/:userId/info', (req, res) => {
+    req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
+    const filteredLevels = sortByUpdatedTime(getUsersLevels(sonolus, req))
+    if (filteredLevels.length === 0) { return res.status(404).json({message: 'No tests found'})}
+    res.json(
+      toServerInfo(
+        {
+          levels: filteredLevels.slice(0, 5),
+          skins: [], backgrounds: [], effects: [], particles: [], engines: []
+        },
+        sonolus.db,
+        req.localize
+      )
+    )
+  })
+
   // Get user detail
   sonolus.app.get('/users/:userId', (req, res) => {
     const users = req.app.locals.users as CustomUserInfo[]
