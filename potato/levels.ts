@@ -23,7 +23,7 @@ export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
  * Express: add/edit/delete level handler
 */
 export function installLevelsEndpoints(sonolus: Sonolus): void {
-  /* Server info  ...is handled by sonolus-express */
+  /* Server info */
   const publicLevels = sonolus.db.levels.filter(level => level.public === true)
   sonolus.serverInfoHandler = (sonolus) => {
     return {
