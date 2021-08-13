@@ -771,6 +771,8 @@ paths:
                 $ref: '#/components/schemas/ServerInfo'
       operationId: getUserServerInfo
       description: ユーザー個別の情報一覧を返します
+      parameters:
+        - $ref: '#/components/parameters/localization'
     parameters:
       - schema:
           type: string
