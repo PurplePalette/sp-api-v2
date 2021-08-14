@@ -2,6 +2,9 @@ import * as firebase from 'firebase-admin'
 import { firebaseParams } from '../config'
 import type { Request, Response, NextFunction } from 'express'
 
+// Uncomment if using firebase auth
+// process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+
 try {
   firebase.initializeApp({
     credential: firebase.credential.cert(firebaseParams),

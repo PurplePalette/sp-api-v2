@@ -24,8 +24,8 @@ export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
 */
 export function installLevelsEndpoints(sonolus: Sonolus): void {
   /* Server info */
-  const publicLevels = sonolus.db.levels.filter(level => level.public === true)
   sonolus.serverInfoHandler = (sonolus) => {
+    const publicLevels = sonolus.db.levels.filter(level => level.public === true)
     return {
       levels: sortByUpdatedTime(publicLevels).slice(0, 5),
       skins: sonolus.db.skins.slice(0, 5),
@@ -91,12 +91,12 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     }
     for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
       const separated = file[0].split('/')
-      const fileName = separated[separated.length - 1].replace('.', '')
+      const fileName = separated[separated.length - 1]
       try {
         fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
       } catch (e) {
         fs.rmdirSync(`./db/levels/${levelName}`, { recursive: true })
-        res.json({ message: 'Invalid file specified' })
+        res.status(400).json({ message: 'Invalid file specified' })
         return
       }
     }
@@ -152,18 +152,18 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
       if (file[0].includes('uploads')) {
         const separated = file[0].split('/')
-        const fileName = separated[separated.length - 1].replace('.', '')
+        const fileName = separated[separated.length - 1]
         try {
           fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
-          res.json({ message: 'Invalid file specified' })
+          res.status(400).json({ message: 'Invalid file specified' })
           return
         }
       }
     }
     fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(newLevel, null, '    '))
     const levelInfo = initLevelInfo(levelName)
-    sonolus.db.levels.filter(level => level.name !== levelName)
+    sonolus.db.levels = sonolus.db.levels.filter(level => level.name !== levelName)
     sonolus.db.levels.push(levelInfo)
     res.json({ message: 'ok' })
   })

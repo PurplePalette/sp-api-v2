@@ -29,6 +29,12 @@ app.use(cors({
   optionsSuccessStatus: 200
 }))
 
+// Set up body parsers.
+// This is required to use OpenApiValidator
+app.use(express.json())
+app.use(express.text())
+app.use(express.urlencoded({ extended: false }))
+
 // Add validator
 app.use(
   OpenApiValidator.middleware({
@@ -40,7 +46,6 @@ app.use((
   err: { status?: number, errors?: string, message?: string },
   req: express.Request, res: express.Response, next: express.NextFunction
 ) => {
-  // console.log(err)
   res.status(err.status || 500).json({
     message: err.message,
     errors: err.errors,

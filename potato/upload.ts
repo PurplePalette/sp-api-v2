@@ -3,13 +3,14 @@ import multer from 'multer'
 import path from 'path'
 import { config } from '../config'
 import { customAlphabet } from 'nanoid'
+import verifyUser from './auth'
 
 const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
 const acceptableMimeTypes = [
+  'application/json',
   'audio/mp3',
   'audio/mpeg',
-  'application/gzip',
   'image/jpg',
   'image/jpeg',
   'image/png',
@@ -46,22 +47,13 @@ const upload = multer({
 
 export function installUploadEndpoints (sonolus: Sonolus) : void {
   // Receive file upload
-  sonolus.app.post('/upload', (req, res) => {
+  sonolus.app.post('/upload', verifyUser, (req, res) => {
     upload(req, res, function (err) {
-      // This upload handler needs mimetype and filename
-      // If request from python with just binary, it return success but don't save file.
-      if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        console.log(err)
-        res.status(400)
-        res.send('Requested file was not valid.')
-      } else if (err) {
-        // An unknown error occurred when uploading.
-        res.send(err)
-        res.status(500)
-        res.send('Internal server error. Please try again.')
+      if (err || !req.file) {
+        res.status(400).json({ message: 'File validation failed.' })
+      } else {
+        res.status(200).json({ message: 'File saved.', filename: req.file.filename })
       }
-      res.send('File saved.')
     })
   })
 }
