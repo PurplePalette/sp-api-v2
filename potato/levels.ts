@@ -96,7 +96,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
         fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
       } catch (e) {
         fs.rmdirSync(`./db/levels/${levelName}`, { recursive: true })
-        res.json({ message: 'Invalid file specified' })
+        res.status(400).json({ message: 'Invalid file specified' })
         return
       }
     }
@@ -156,7 +156,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
         try {
           fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
-          res.json({ message: 'Invalid file specified' })
+          res.status(400).json({ message: 'Invalid file specified' })
           return
         }
       }
