@@ -24,8 +24,8 @@ export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
 */
 export function installLevelsEndpoints(sonolus: Sonolus): void {
   /* Server info */
-  const publicLevels = sonolus.db.levels.filter(level => level.public === true)
   sonolus.serverInfoHandler = (sonolus) => {
+    const publicLevels = sonolus.db.levels.filter(level => level.public === true)
     return {
       levels: sortByUpdatedTime(publicLevels).slice(0, 5),
       skins: sonolus.db.skins.slice(0, 5),
