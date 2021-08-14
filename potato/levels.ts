@@ -154,7 +154,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
         const separated = file[0].split('/')
         const fileName = separated[separated.length - 1]
         try {
-          fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
+          fs.moveSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
           res.status(400).json({ message: 'Invalid file specified' })
           return
