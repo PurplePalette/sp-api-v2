@@ -54,8 +54,24 @@ app.use((
 
 // Install sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
+
+// Load sonolus-pack folder
+try {
+  potato.load(config.packer)
+} catch (e) {
+  console.log('Sonolus-packer db was not valid!')
+}
+
+// Adjust sonolus-packed level to custom level
+for (let i = 0; i < potato.db.levels.length; i++) {
+  potato.db.levels[i].public = true
+  potato.db.levels[i].userId = 'admin'
+  potato.db.levels[i].createdTime = 1
+  potato.db.levels[i].updatedTime = 1
+}
+
 // Load database
-potato.db.levels = initLevelsDatabase()
+potato.db.levels = potato.db.levels.concat(initLevelsDatabase())
 app.locals.users = initUsersDatabase()
 
 // Inject custom endpoints
@@ -64,13 +80,6 @@ installLevelsEndpoints(potato)
 installTestsEndpoints(potato)
 installUsersEndpoints(potato)
 installUploadEndpoints(potato)
-
-// Load sonolus-pack folder
-try {
-  potato.load(config.packer)
-} catch (e) {
-  console.log('Sonolus-packer db was not valid!')
-}
 
 // Startup the server
 app.listen(config.port, () => {

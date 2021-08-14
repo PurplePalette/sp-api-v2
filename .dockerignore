@@ -1,14 +1,12 @@
 node_modules
+db/levels/
+db/users/
+db/pack/
 uploads/*.jpg
 uploads/*.jpeg
 uploads/*.png
 uploads/*.mp3
 uploads/*.jpg
-packer/*
-db/levels/*
-db/users/*
-db/pack/repository
-db/pack/db.json
 db/source/engines/pjsekai
 db/source/particles/psekai
 db/source/backgrounds/psekai
@@ -16,6 +14,5 @@ db/source/effects/psekai
 db/source/skins/psekai2
 db/source/skins/psekai.2
 !.gitkeep
-config/serviceAccount.json
-config/settings.json
+config
 dist
