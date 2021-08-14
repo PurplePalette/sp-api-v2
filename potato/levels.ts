@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import { Sonolus, LevelInfo, defaultListHandler } from 'sonolus-express'
 import { customAlphabet } from 'nanoid'
 import { initLevelInfo } from './reader'
@@ -93,7 +93,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
       const separated = file[0].split('/')
       const fileName = separated[separated.length - 1]
       try {
-        fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
+        fs.moveSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
       } catch (e) {
         fs.rmdirSync(`./db/levels/${levelName}`, { recursive: true })
         res.status(400).json({ message: 'Invalid file specified' })
