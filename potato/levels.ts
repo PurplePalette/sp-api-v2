@@ -91,7 +91,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     }
     for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
       const separated = file[0].split('/')
-      const fileName = separated[separated.length - 1].replace('.', '')
+      const fileName = separated[separated.length - 1]
       try {
         fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
       } catch (e) {
@@ -152,7 +152,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
       if (file[0].includes('uploads')) {
         const separated = file[0].split('/')
-        const fileName = separated[separated.length - 1].replace('.', '')
+        const fileName = separated[separated.length - 1]
         try {
           fs.renameSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
@@ -163,7 +163,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     }
     fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(newLevel, null, '    '))
     const levelInfo = initLevelInfo(levelName)
-    sonolus.db.levels.filter(level => level.name !== levelName)
+    sonolus.db.levels = sonolus.db.levels.filter(level => level.name !== levelName)
     sonolus.db.levels.push(levelInfo)
     res.json({ message: 'ok' })
   })
