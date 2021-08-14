@@ -27,7 +27,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   sonolus.app.get('/users/:userId/info', (req, res) => {
     req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
     const filteredLevels = sortByUpdatedTime(getUsersLevels(sonolus, req))
-    if (filteredLevels.length === 0) { return res.status(404).json({message: 'No tests found'})}
+    if (filteredLevels.length === 0) { return res.status(404).json({message: 'No user found'})}
     res.json(
       toServerInfo(
         {
@@ -41,15 +41,17 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   })
 
   // Get user detail
-  sonolus.app.get('/users/:userId', (req, res) => {
+  sonolus.app.get('/users/:userId', verifyUser, (req, res) => {
     const users = req.app.locals.users as CustomUserInfo[]
     const matchedUser = users.filter(user => user.userId === req.params.userId)
     if (matchedUser.length === 0) {
-      res.json({ message: 'User not found' })
+      res.status(404).json({ message: 'User not found' })
       return
     }
     const resp = matchedUser[0]
-    resp.testId = 'hidden'
+    if (req.params.userId != req.userId) {
+      resp.testId = 'hidden'
+    }
     res.json(resp)
   })
 
@@ -74,7 +76,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   })
 
   // Get user detail
-  sonolus.app.get('/users/:userId/levels/list', (req, res, next) => {
+  sonolus.app.get('/users/:userId/levels/list', verifyUser, (req, res, next) => {
     (async () => {
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       const userLevelListHandler = (
