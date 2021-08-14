@@ -10,7 +10,7 @@ try {
     credential: firebase.credential.cert(firebaseParams),
   })
 } catch (err) {
-  console.log('Failed to initialize firebase, auth wont work')
+  console.log('Failed to initialize firebase, auth wont work.')
 }
 
 export async function verifyToken (idToken: string) : Promise<string> {

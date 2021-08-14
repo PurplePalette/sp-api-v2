@@ -16,4 +16,6 @@ db/source/effects/psekai
 db/source/skins/psekai2
 db/source/skins/psekai.2
 !.gitkeep
-serviceAccount.json
+config/serviceAccount.json
+config/settings.json
+dist

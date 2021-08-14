@@ -1,4 +1,5 @@
-import * as serviceAccount from './serviceAccount.json'
+import * as firebase from 'firebase-admin'
+import fs from 'fs'
 
 export interface SonolusOptions {
   /**
@@ -47,10 +48,23 @@ export interface GlobalConfig {
   sonolusOptions: SonolusOptions,
 }
 
+export interface ServiceAccount {
+  type: string;
+  project_id: string;
+  private_key_id: string;
+  private_key: string;
+  client_email: string;
+  client_id: string;
+  auth_uri: string;
+  token_uri: string;
+  auth_provider_x509_cert_url: string;
+  client_x509_cert_url: string;
+}
+
 /**
  * Global configuration of sonolus-uploader-core2
 */
-export const config : GlobalConfig = {
+let conf: GlobalConfig = {
   port: 3000,
   uploads: './uploads',
   static: './public',
@@ -63,16 +77,32 @@ export const config : GlobalConfig = {
     fallbackLocale: 'ja'
   }
 }
-
-export const firebaseParams = {
-  type: serviceAccount.type,
-  projectId: serviceAccount.project_id,
-  privateKeyId: serviceAccount.private_key_id,
-  privateKey: serviceAccount.private_key,
-  clientEmail: serviceAccount.client_email,
-  clientId: serviceAccount.client_id,
-  authUri: serviceAccount.auth_uri,
-  tokenUri: serviceAccount.token_uri,
-  authProviderX509CertUrl: serviceAccount.auth_provider_x509_cert_url,
-  clientC509CertUrl: serviceAccount.client_x509_cert_url
+try {
+  const rawConfig = fs.readFileSync('./config/settings.json', 'utf8')
+  conf = JSON.parse(rawConfig) as GlobalConfig
+} catch {
+  console.log('Failed to load settings.json, using default conf.')
 }
+
+export const config : GlobalConfig = conf
+
+/**
+ * Service account for firebase authorization
+*/
+const fireConf: firebase.ServiceAccount = {
+  clientEmail: '',
+  privateKey: '',
+  projectId: ''
+}
+
+try {
+  const rawSA = fs.readFileSync('./config/serviceAccount.json', 'utf8')
+  const sa = JSON.parse(rawSA) as ServiceAccount
+  fireConf.clientEmail = sa.client_email
+  fireConf.privateKey = sa.private_key
+  fireConf.projectId = sa.project_id
+} catch {
+  console.log('Failed to load serviceAccount.json, using default conf.')
+}
+
+export const firebaseParams: firebase.ServiceAccount = fireConf
