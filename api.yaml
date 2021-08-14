@@ -1502,9 +1502,21 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUploadResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
       tags:
         - uploads
-      description: 独自要素
+      description: |-
+        ファイルのアップロードを受け付ける
+        (投稿から1時間以上使用されないファイルは自動削除したい)
+      security:
+        - Bearer: []
   '/repository/EffectData/{resourceName}':
     parameters:
       - schema:
@@ -2800,6 +2812,26 @@ components:
           maxLength: 1000
       required:
         - ja
+    PostUploadResponse:
+      title: PostUploadResponse
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response status in human readable
+        filename:
+          type: string
+      required:
+        - message
+      description: Structure of post upload response
+      x-examples:
+        success:
+          value:
+            message: File saved.
+            filename: LHSFemJ5DiiH4QpjbyuU.json
+        failed:
+          value:
+            message: File validation failed.
   securitySchemes:
     Bearer:
       type: http
