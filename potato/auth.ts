@@ -2,8 +2,10 @@ import * as firebase from 'firebase-admin'
 import { firebaseParams } from '../config'
 import type { Request, Response, NextFunction } from 'express'
 
-// Uncomment if using firebase auth
+// Uncomment if using firebase auth emu
 // process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+// Uncomment if using firebase auth emu inside docker container
+// process.env.FIREBASE_AUTH_EMULATOR_HOST = 'host.docker.internal:9099'
 
 try {
   firebase.initializeApp({
