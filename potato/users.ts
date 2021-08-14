@@ -9,6 +9,7 @@ import type { Request } from 'express'
 import { sortByUpdatedTime } from './levels'
 import CustomUserInfo from '../types/user'
 import verifyUser from './auth'
+import fs from 'fs'
 
 function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
   let matchedLevels = sonolus.db.levels.filter(level => level.userId === req.params.userId)
@@ -67,7 +68,8 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
     }
     users = users.filter(user => user.userId !== reqUser.userId)
     users.push(reqUser)
-    req.app.set('users', users)
+    req.app.locals.users = users
+    fs.writeFileSync(`./db/users/${reqUser.userId}.json`, JSON.stringify(reqUser, null, '    '))
     res.json({ message: 'User edit success' })
   })
 
