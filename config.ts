@@ -43,6 +43,10 @@ export interface GlobalConfig {
    */
   maxSize: number,
   /**
+   * ProjectId of google cloud logging
+   */
+  projectId: string,
+  /**
    * Options of sonolus-express
    */
   sonolusOptions: SonolusOptions,
@@ -71,6 +75,7 @@ let conf: GlobalConfig = {
   packer: './db/pack',
   engine: 'pjsekai',
   maxSize: 15 * 1024 * 1024,
+  projectId: '',
   sonolusOptions: {
     version: '0.5.5',
     basePath: '',

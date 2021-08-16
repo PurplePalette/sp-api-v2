@@ -1,10 +1,12 @@
 import fs from 'fs-extra'
+import { Logging } from '@google-cloud/logging'
 import { Sonolus, LevelInfo, defaultListHandler } from 'sonolus-express'
 import { customAlphabet } from 'nanoid'
 import { initLevelInfo } from './reader'
 import { config } from '../config'
 import verifyUser from './auth'
 
+process.env.GOOGLE_APPLICATION_CREDENTIALS = './config/loggingServiceAccount.json'
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
 
 export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
@@ -17,6 +19,32 @@ export function sortByUpdatedTime(levels: LevelInfo[]): LevelInfo[]{
     }
     return 0
   })
+}
+
+//eslint-disable-next-line
+async function saveLog (errorLocation: string, error: any) {
+  try {
+    const logger = new Logging({ projectId: config.projectId })
+    const log = logger.log('suc2-error')
+    const errorEntry = log.entry(
+      {
+        severity: 'WARNING',
+        labels: {
+          errorLocation
+        },
+        resource: {
+          type: 'api',
+        },
+      },
+      {
+        errorMessage: error as string
+      }
+    )
+    await log.write(errorEntry)
+    console.log('Sent error log to google cloud logging.')
+  } catch (err) {
+    console.log('Google cloud logging is not available.')
+  }
 }
 
 /**
@@ -49,7 +77,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
   }
 
   /* Add level */
-  sonolus.app.post('/levels/:levelId', verifyUser, (req, res) => {
+  sonolus.app.post('/levels/:levelId', verifyUser, async (req, res) => {
     const reqLevel = req.body as unknown as LevelInfo
     let levelName = nanoid()
     while (fs.existsSync(`./db/levels/${levelName}`)) {
@@ -95,6 +123,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
       try {
         fs.moveSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
       } catch (e) {
+        await saveLog('post-levels-level', e)
         fs.rmdirSync(`./db/levels/${levelName}`, { recursive: true })
         res.status(400).json({ message: 'Invalid file specified' })
         return
@@ -107,7 +136,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
   })
 
   /* Edit level */
-  sonolus.app.patch('/levels/:levelName', verifyUser, (req, res) => {
+  sonolus.app.patch('/levels/:levelName', verifyUser, async (req, res) => {
     const reqLevel = req.body as unknown as LevelInfo
     const matchedLevel = sonolus.db.levels.filter(level => level.name === req.params.levelName)
     if (matchedLevel.length === 0) {
@@ -156,6 +185,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
         try {
           fs.moveSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
+          await saveLog('patch-levels-level', e)
           res.status(400).json({ message: 'Invalid file specified' })
           return
         }

@@ -19,3 +19,5 @@ db/source/skins/psekai.2
 config/serviceAccount.json
 config/settings.json
 dist
+db/sekai-source
+config/loggingServiceAccount.json
