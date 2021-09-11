@@ -89,6 +89,10 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
 
   /* Add level */
   sonolus.app.post('/levels/:levelId', verifyUser, async (req, res) => {
+    if (!req.userId) {
+      res.status(401).json({ message: 'Unauthorized' })
+      return
+    }
     const reqLevel = req.body as unknown as LevelInfo
     let levelName = nanoid()
     while (fs.existsSync(`./db/levels/${levelName}`)) {
@@ -97,10 +101,6 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     fs.mkdirSync(`./db/levels/${levelName}`)
     const now = new Date()
     const unixTime = Math.floor(now.getTime() / 1000)
-    if (!req.userId) {
-      res.status(401).json({ message: 'Unauthorized' })
-      return
-    }
     const newLevel: LevelInfo = {
       name: levelName,
       version: 1,
