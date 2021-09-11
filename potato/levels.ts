@@ -64,6 +64,17 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     }
   }
 
+  /* Detail Level */
+  sonolus.levelDetailsHandler = (sonolus, name) => {
+    // 存在しなければsonolus-expressから既に404が返っているのでここでは何もしない
+    const matchedLevel = sonolus.db.levels.filter(level => level.name === name)
+    return {
+      info: matchedLevel[0],
+      description: matchedLevel[0].description,
+      recommended: [],
+    }
+  }
+
   /* List level */
   sonolus.levelListHandler = (sonolus, keywords, page) => {
     const publicLevels = sonolus.db.levels.filter(l => l.public === true)
