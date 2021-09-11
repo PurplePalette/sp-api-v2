@@ -20,6 +20,7 @@
     "nanoid": "^3.1.23",
     "sonolus-express": "^0.2.0",
     "sonolus-pack": "^0.2.0",
+    "sonolus-pjsekai-engine": "^0.1.0-beta.0",
     "sonolus.js": "^2.0.0"
   },
   "devDependencies": {

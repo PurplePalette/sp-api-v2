@@ -2618,6 +2618,13 @@ sonolus-pack@^0.2.0:
     commander "^7.2.0"
     fs-extra "^10.0.0"
 
+sonolus-pjsekai-engine@^0.1.0-beta.0:
+  version "0.1.0-beta.0"
+  resolved "https://registry.yarnpkg.com/sonolus-pjsekai-engine/-/sonolus-pjsekai-engine-0.1.0-beta.0.tgz#2487743c25f888d46a728bfd53b7d64bd1d5b25f"
+  integrity sha512-OrapM5brN6ET4s2ThMzSou7UENdS2Ikwv2+zC0RLvDA9cpfiZdi3ywt9MN1Qa+15xRZCMPAyLnR/q6zOP1ZaEA==
+  dependencies:
+    sus-analyzer "^2.2.4"
+
 sonolus.js@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/sonolus.js/-/sonolus.js-2.0.0.tgz#8d1069a2454b15bda50348dc518fccca07039e9e"
@@ -2735,6 +2742,11 @@ supports-color@^7.1.0:
   integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
   dependencies:
     has-flag "^4.0.0"
+
+sus-analyzer@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/sus-analyzer/-/sus-analyzer-2.2.4.tgz#0fd02706331d85dc003af60ce3cb82e4e4c3010a"
+  integrity sha512-37Tq8aXKI4xYh2SJIvv2cAR4Qcb/mxjWvjfDBehMB+uxzeR8dSuvkrAWaPL7bQbkGuxCdgRkm6kapoH1/bQzzw==
 
 table@^6.0.9:
   version "6.7.1"
