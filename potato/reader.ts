@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { fromSus } from 'sonolus-pjsekai-engine'
 import type { LevelInfo } from 'sonolus-express'
 import { gzipSync } from 'zlib'
 import { createHash } from 'crypto'
@@ -56,6 +57,9 @@ function loadLevelInfo(levelName: string): LevelInfo | undefined {
 */
 export function initLevelInfo(levelName: string): LevelInfo {
   const levelInfo = JSON.parse(fs.readFileSync(`./db/levels/${levelName}/info.json`).toString()) as LevelInfo
+  const susData: string = fs.readFileSync(`./db/levels/${levelName}/data.sus`).toString()
+  const levelData = JSON.stringify(fromSus(susData) as unknown as string)
+  fs.writeFileSync(`./db/levels/${levelName}/data.json`, levelData)
   const levelDataGzip = gzipSync(fs.readFileSync(`./db/levels/${levelName}/data.json`).toString(), { level: 9 })
   fs.writeFileSync(`./db/levels/${levelName}/data.gz`, levelDataGzip)
   const levelDataHash = getHashFromFile(`./db/levels/${levelName}/data.gz`)

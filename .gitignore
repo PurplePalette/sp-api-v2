@@ -21,3 +21,8 @@ config/settings.json
 dist
 db/sekai-source
 config/loggingServiceAccount.json
+db/source/backgrounds/pjsekai.live
+db/source/effects/pjsekai.classic
+db/source/particles/pjsekai.classic
+db/source/skins/pjsekai.classic
+db/source/engines/wbp-pjsekai

@@ -117,7 +117,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
       bgm: { type: 'LevelBgm', hash: '', url: '' },
       data: { type: 'LevelData', hash: '', url: '' }
     }
-    for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
+    for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.sus']]) {
       const separated = file[0].split('/')
       const fileName = separated[separated.length - 1]
       try {
@@ -178,7 +178,7 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
       data: { type: 'LevelData', hash: '', url: '' }
     }
     const levelName = oldLevel.name
-    for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.json']]) {
+    for (const file of [[reqLevel.cover.url, 'cover.png'], [reqLevel.bgm.url, 'bgm.mp3'], [reqLevel.data.url, 'data.sus']]) {
       if (file[0].includes('uploads')) {
         const separated = file[0].split('/')
         const fileName = separated[separated.length - 1]
