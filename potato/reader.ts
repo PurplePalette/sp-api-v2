@@ -43,7 +43,7 @@ function injectLackedFields(levelData: LevelInfo, levelName: string) {
 */
 function loadLevelInfo(levelName: string): LevelInfo | undefined {
   const levelData = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as LevelInfo
-  if (levelData.userId && levelData.coverHash && levelData.public) {
+  if (levelData.userId && levelData.coverHash) {
     return injectLackedFields(levelData, levelName)
   } else {
     return undefined
@@ -92,8 +92,9 @@ export function initLevelsDatabase(): LevelInfo[] {
         const newLevel = initLevelInfo(levelName)
         levels.push(newLevel)
       }
-    } catch {
+    } catch (e) {
       console.error('Error reading level info file for ' + levelName)
+      console.error(e)
     }
   }
   console.log('Loaded levels database successfully.')
