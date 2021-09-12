@@ -9,6 +9,7 @@ import { installStaticEndpoints } from './potato/static'
 import { installLevelsEndpoints } from './potato/levels'
 import { installTestsEndpoints } from './potato/tests'
 import { installUsersEndpoints } from './potato/users'
+import { installSekaiEngine } from './potato/engine'
 import { config } from './config'
 
 /*
@@ -54,6 +55,8 @@ app.use((
 
 // Install sonolus-express
 const potato = new Sonolus(app, config.sonolusOptions)
+// Inject sekai-engine
+installSekaiEngine(potato)
 
 // Load sonolus-pack folder
 try {
