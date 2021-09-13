@@ -194,7 +194,9 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
         const separated = file[0].split('/')
         const fileName = separated[separated.length - 1]
         try {
-          fs.unlinkSync(`./db/levels/${levelName}/${file[1]}`)
+          if (fs.existsSync(`./db/levels/${levelName}/${file[1]}`)) {
+            fs.unlinkSync(`./db/levels/${levelName}/${file[1]}`)
+          }
           fs.moveSync(`./uploads/${fileName}`, `./db/levels/${levelName}/${file[1]}`)
         } catch (e) {
           await saveLog('patch-levels-level', e)

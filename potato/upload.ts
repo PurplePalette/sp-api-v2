@@ -8,7 +8,7 @@ import verifyUser from './auth'
 const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
 const acceptableMimeTypes = [
-  'application/json',
+  'text/plain',
   'audio/mp3',
   'audio/mpeg',
   'image/jpg',
@@ -29,7 +29,7 @@ const upload = multer({
   storage: storage,
   fileFilter: (_, file, cb) => {
     // Validate file extension
-    if (!acceptableMimeTypes.includes(file.mimetype)) {
+    if (!acceptableMimeTypes.includes(file.mimetype) && path.extname(file.originalname) !== '.sus') {
       // cb null,False denies upload
       cb(null, false)
       // cb error return text response
