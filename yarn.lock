@@ -2619,9 +2619,9 @@ sonolus-pack@^0.2.0:
     fs-extra "^10.0.0"
 
 sonolus-pjsekai-engine@^0.1.0-beta.0:
-  version "0.1.0-beta.2"
-  resolved "https://registry.yarnpkg.com/sonolus-pjsekai-engine/-/sonolus-pjsekai-engine-0.1.0-beta.2.tgz#a70eb14f9c7c41e10fa7f42c0be6347f8e79c89f"
-  integrity sha512-/r78rWv2KiUjgD6RG61Mxiexs0f0DvlSnBFaRl86SVZBOz3GA8ohqs9cJk1jHDSKNpGPKRwd+uFRRg/eNovyBw==
+  version "0.1.0-beta.8"
+  resolved "https://registry.yarnpkg.com/sonolus-pjsekai-engine/-/sonolus-pjsekai-engine-0.1.0-beta.8.tgz#429142e6c89d3ab5f37dc423eae53109fafd9f77"
+  integrity sha512-tA0ZFStjdzXn2xqvUBSGnGmNpWu53nM2GacUwbXNwR7YYUdbbol0M8le3UmxCtad+swgoTZeXaJFY1nIhJH62A==
 
 sonolus.js@^2.0.0:
   version "2.0.0"
