@@ -8,6 +8,7 @@ import verifyUser from './auth'
 const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
 const acceptableMimeTypes = [
+  'application/octet-stream',
   'application/json',
   'audio/mp3',
   'audio/mpeg',
