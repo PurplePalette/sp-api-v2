@@ -17,7 +17,7 @@
     "fs-extra": "^10.0.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "nanoid": "^3.1.23",
+    "nanoid": "^3.1.31",
     "sonolus-express": "^2.0.0-beta.0",
     "sonolus-pack": "^0.2.0",
     "sonolus-pjsekai-engine": "0.1.0-beta.10",
