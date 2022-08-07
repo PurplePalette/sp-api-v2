@@ -1,6 +1,7 @@
 from typing import Dict, List
 from flask import Flask, make_response, request, Response
 import requests
+import json
 
 app = Flask(__name__)
 ENDPOINT = "https://servers-legacy.purplepalette.net/"
@@ -33,12 +34,14 @@ def filter_response_headers(resp: requests.Response) -> List[tuple]:
         "content-length",
         "transfer-encoding",
         "connection",
+        "sonolus-version"
     ]
     headers = [
         (name, value)
         for (name, value) in resp.raw.headers.items()
         if name.lower() not in excluded_headers
     ]
+    headers.append(("Sonolus-Version", VERSION))
     return headers
 
 
@@ -52,12 +55,14 @@ def handle_info_endpoint(path: str, args: Dict[str, str]) -> Response:
     # 応答データを書き換え
     ret_data = resp.json()
     for e in ret_data.keys():
+        for i in range(len(ret_data[e])):
+            ret_data[e][i]["name"] = add_prefix(ret_data[e][i]["name"])
         ret_data[e] = {
             "items": ret_data[e],
             "search": {"options": KEYWORD_OPTIONS}
         }
     # 書き換えた応答データを作成
-    ret = make_response(ret_data, resp.status_code)
+    ret = make_response(json.dumps(ret_data), resp.status_code)
     ret.headers = filter_response_headers(resp)
     return ret
 
@@ -101,10 +106,9 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
         url=ENDPOINT + path,
         headers={
             key: value for (key, value) in request.headers
-            if key != "Host"
+            if key not in ["Host", "Accept-Encoding", "Accept-Language", "Accept"]
         },
         params=args,
-        data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False,
     )
@@ -115,6 +119,13 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
     if "item" in ret:
         ret["item"]["name"] = add_prefix(ret["item"]["name"])
         if "level" in path:
+            ret["item"]["engine"]["version"] = 6
+            ret["item"]["engine"]["effect"]["version"] = 3
+            ret["item"]["engine"]["effect"]["audio"] = {
+                "type":"EffectAudio",
+                "hash":"9ccbbac09dc3664388eb19486cb11c9a202acd08",
+                "url":"/sonolus/repository/EffectAudio/9ccbbac09dc3664388eb19486cb11c9a202acd08"
+            }
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"]["engine"][k]["name"] = add_prefix(
                     ret["item"]["engine"][k]["name"]
@@ -124,9 +135,36 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
                 ret["item"][k]["name"] = add_prefix(ret["item"][k]["name"])
             ret["item"]["version"] = 6
         elif "effect" in path:
+            print("Modidfy!")
             ret["item"]["version"] = 3
+            ret["item"]["audio"] = {
+                "type":"EffectAudio",
+                "hash":"9ccbbac09dc3664388eb19486cb11c9a202acd08",
+                "url":"/sonolus/repository/EffectAudio/9ccbbac09dc3664388eb19486cb11c9a202acd08"
+            }
     response = Response(
-        str(ret),
+        json.dumps(ret),
+        resp.status_code,
+        filter_response_headers(resp)
+    )
+    return response
+
+
+@app.route("/repository/<path:path>")
+def repository_proxy(path: str) -> Response:
+    resp = requests.request(
+        method=request.method,
+        url=ENDPOINT + "repository/" + path,
+        headers={
+            key: value for (key, value) in request.headers
+            if key != "Host"
+        },
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False,
+    )
+    response = Response(
+        resp.content,
         resp.status_code,
         filter_response_headers(resp)
     )
@@ -137,9 +175,9 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
 def proxy(path: str) -> Response:
     """全パスへのリクエストを受け取り プロキシサーバーとして動作する"""
     args = request.args
-    if path.endswith("/info"):
+    if path.endswith("info"):
         return handle_info_endpoint(path, args)
-    if path.endswith("/list"):
+    if path.endswith("list"):
         return handle_list_endpoint(path, args)
     # 汎用リクエスト
     return handle_general_endpoint(path, args)
