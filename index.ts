@@ -26,7 +26,7 @@ app.use(logger('tiny'))
 
 // Add CORS support
 app.use(cors({
-  origin: ['https://potato.purplepalette.net', 'http://localhost:8080'],
+  origin: ['https://potato.purplepalette.net', 'https://potato-next.purplepalette.net', 'https://potato-dev.purplepalette.net', 'http://localhost:8080'],
   optionsSuccessStatus: 200
 }))
 
@@ -62,6 +62,7 @@ installSekaiEngine(potato)
 try {
   potato.load(config.packer)
 } catch (e) {
+  console.log(e)
   console.log('Sonolus-packer db was not valid!')
 }
 
