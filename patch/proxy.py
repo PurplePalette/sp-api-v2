@@ -135,7 +135,6 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
                 ret["item"][k]["name"] = add_prefix(ret["item"][k]["name"])
             ret["item"]["version"] = 6
         elif "effect" in path:
-            print("Modidfy!")
             ret["item"]["version"] = 3
             ret["item"]["audio"] = {
                 "type":"EffectAudio",
