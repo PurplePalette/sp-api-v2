@@ -5,6 +5,7 @@ uploads/*.png
 uploads/*.mp3
 uploads/*.jpg
 packer/*
+db/bak
 db/levels/*
 db/users/*
 db/pack/repository
