@@ -121,28 +121,65 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
         if "level" in path:
             ret["item"]["engine"]["version"] = 6
             ret["item"]["engine"]["effect"]["version"] = 3
+            ret["item"]["engine"]["effect"]["data"] = {
+                "type": "EffectData",
+                "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
+                "url": "https://cloudflare-ipfs.com/ipfs/QmS1G1ibXVtMq2H6mP7M3gvUXyMuWBd7G8ehDWnEwFCJjh"
+            }
             ret["item"]["engine"]["effect"]["audio"] = {
-                "type":"EffectAudio",
-                "hash":"9ccbbac09dc3664388eb19486cb11c9a202acd08",
-                "url":"/sonolus/repository/EffectAudio/9ccbbac09dc3664388eb19486cb11c9a202acd08"
+                "type": "EffectAudio",
+                "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
+                "url": "https://cloudflare-ipfs.com/ipfs/QmbrQzojNWhwm2ScohWTTEwRzgz61aZPVTLTFHqE4WUyow"
             }
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"]["engine"][k]["name"] = add_prefix(
                     ret["item"]["engine"][k]["name"]
                 )
+                for d in ["thumbnail", "data", "configuration", "texture", "image", "audio"]:
+                    if d in ret["item"]["engine"][k].keys():
+                        old = ret["item"]["engine"][k][d]["url"]
+                        if "https://" in old:
+                            continue
+                        ret["item"]["engine"][k][d]["url"] = f"https://servers.purplepalette.net{old}"
         elif "engine" in path:
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"][k]["name"] = add_prefix(ret["item"][k]["name"])
             ret["item"]["version"] = 6
         elif "effect" in path:
             ret["item"]["version"] = 3
+            ret["item"]["data"] = {
+                "type": "EffectData",
+                "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
+                "url": "https://cloudflare-ipfs.com/ipfs/QmS1G1ibXVtMq2H6mP7M3gvUXyMuWBd7G8ehDWnEwFCJjh"
+            }
             ret["item"]["audio"] = {
-                "type":"EffectAudio",
-                "hash":"9ccbbac09dc3664388eb19486cb11c9a202acd08",
-                "url":"/sonolus/repository/EffectAudio/9ccbbac09dc3664388eb19486cb11c9a202acd08"
+                "type": "EffectAudio",
+                "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
+                "url": "https://cloudflare-ipfs.com/ipfs/QmbrQzojNWhwm2ScohWTTEwRzgz61aZPVTLTFHqE4WUyow"
             }
     response = Response(
         json.dumps(ret),
+        resp.status_code,
+        filter_response_headers(resp)
+    )
+    return response
+
+
+@app.route("/tests/<testId>/repository/<path:path>")
+def repository_proxy2(testId: str, path: str) -> Response:
+    resp = requests.request(
+        method=request.method,
+        url=ENDPOINT + "repository/" + path,
+        headers={
+            key: value for (key, value) in request.headers
+            if key != "Host"
+        },
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False,
+    )
+    response = Response(
+        resp.content,
         resp.status_code,
         filter_response_headers(resp)
     )
@@ -180,6 +217,38 @@ def proxy(path: str) -> Response:
         return handle_list_endpoint(path, args)
     # 汎用リクエスト
     return handle_general_endpoint(path, args)
+
+
+@app.route("/tests/<testId>/sonolus/<path:path>")
+def proxy2(testId: str, path: str) -> Response:
+    """全パスへのリクエストを受け取り プロキシサーバーとして動作する"""
+    args = request.args
+    if path.endswith("info"):
+        return handle_info_endpoint(f"tests/{testId}/{path}", args)
+    if path.endswith("list"):
+        return handle_list_endpoint(f"tests/{testId}/{path}", args)
+    # 汎用リクエスト
+    return handle_general_endpoint(f"tests/{testId}/{path}", args)
+
+
+@app.route("/")
+def index() -> Response:
+    html = """
+<html>
+<head>
+<title>SweetPotato Server is working</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+</head>
+<body>
+<h1>SweetPotato Server is working</h1>
+<h1>SweetPotato サーバーは正常に動作しています</h1>
+<script>
+alert('SweetPotato Server is working. Please copy this page address and add as custom server to your sonolus client.')
+alert('SweetPotatoサーバーは正常に動作しています。このページのURLをコピーしてsonolusクライアントに追加してください。')
+</script>
+</body>
+</html>"""
+    return html
 
 
 if __name__ == "__main__":
