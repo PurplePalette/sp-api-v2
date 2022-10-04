@@ -1,5 +1,5 @@
 from typing import Dict, List
-from flask import Flask, send_from_directory, send_file, make_response, request, Response
+from flask import Flask, send_from_directory, send_file, make_response, redirect, request, Response
 import requests
 import json
 
@@ -278,15 +278,17 @@ def proxy2(testId: str, path: str) -> Response:
 
 @app.route('/')
 def send_index():
-    try:
-        return send_file('static/index.html')
-    except:
-        return "200 Server is working"
+    return send_file('static/index.html')
+
+
+@app.route('/assets/<path:path>')
+def send_asset(path):
+    return send_from_directory('static/assets', path)
 
 
 @app.route('/<path:path>')
-def send_report(path):
-    return send_from_directory('static', path)
+def send_index2(path):
+    return send_file('static/index.html')
 
 
 if __name__ == "__main__":
