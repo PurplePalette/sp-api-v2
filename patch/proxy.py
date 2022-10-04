@@ -1,11 +1,11 @@
 from typing import Dict, List
-from flask import Flask, make_response, request, Response
+from flask import Flask, send_from_directory, send_file, make_response, request, Response
 import requests
 import json
 
 app = Flask(__name__)
 ENDPOINT = "https://servers-legacy.purplepalette.net/"
-VERSION = "0.6.0"
+VERSION = "0.6.2"
 SERVER_PREFIX = "sweet-potato-"
 KEYWORD_OPTIONS = [
     {
@@ -57,10 +57,43 @@ def handle_info_endpoint(path: str, args: Dict[str, str]) -> Response:
     for e in ret_data.keys():
         for i in range(len(ret_data[e])):
             ret_data[e][i]["name"] = add_prefix(ret_data[e][i]["name"])
+        if "levels" in e:
+            for i in range(len(ret_data["levels"])):
+                for k in ["background", "particle", "skin", "effect"]:
+                    ret_data["levels"][i]["engine"][k]["name"] = add_prefix(
+                        ret_data["levels"][i]["engine"][k]["name"]
+                    )
+                ret_data["levels"][i]["engine"]["version"] = 6
+                ret_data["levels"][i]["engine"]["effect"]["version"] = 3
+                ret_data["levels"][i]["engine"]["effect"]["data"] = {
+                    "type": "EffectData",
+                    "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
+                    "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+                }
+                ret_data["levels"][i]["engine"]["effect"]["audio"] = {
+                    "type": "EffectAudio",
+                    "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
+                    "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+                }
+        elif "engines" in e:
+            for i in range(len(ret_data["engines"])):
+                ret_data["engines"][i]["version"] = 6
+                for k in ["background", "particle", "skin", "effect"]:
+                    ret_data["engines"][i][k]["name"] = add_prefix(
+                        ret_data["engines"][i][k]["name"]
+                    )
+        elif "effect" in e:
+            for i in range(len(ret_data["effects"])):
+                ret_data["effects"][i]["version"] = 3
         ret_data[e] = {
             "items": ret_data[e],
             "search": {"options": KEYWORD_OPTIONS}
         }
+    ret_data["title"] = "Sweet Potato"
+    ret_data["banner"] = {
+        "type": "ServerBanner",
+        "url": "https://cdn-etc.purplepalette.net/sp-banner.png"
+    }
     # 書き換えた応答データを作成
     ret = make_response(json.dumps(ret_data), resp.status_code)
     ret.headers = filter_response_headers(resp)
@@ -83,6 +116,18 @@ def handle_list_endpoint(path: str, args: Dict[str, str]) -> Response:
                 ret_data["items"][i]["engine"][k]["name"] = add_prefix(
                     ret_data["items"][i]["engine"][k]["name"]
                 )
+            ret_data["items"][i]["engine"]["version"] = 6
+            ret_data["items"][i]["engine"]["effect"]["version"] = 3
+            ret_data["items"][i]["engine"]["effect"]["data"] = {
+                "type": "EffectData",
+                "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+            }
+            ret_data["items"][i]["engine"]["effect"]["audio"] = {
+                "type": "EffectAudio",
+                "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+            }
         elif "engine" in path:
             ret_data["items"][i]["version"] = 6
             for k in ["background", "particle", "skin", "effect"]:
@@ -124,12 +169,12 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
             ret["item"]["engine"]["effect"]["data"] = {
                 "type": "EffectData",
                 "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                "url": "https://cloudflare-ipfs.com/ipfs/QmS1G1ibXVtMq2H6mP7M3gvUXyMuWBd7G8ehDWnEwFCJjh"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
             }
             ret["item"]["engine"]["effect"]["audio"] = {
                 "type": "EffectAudio",
                 "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                "url": "https://cloudflare-ipfs.com/ipfs/QmbrQzojNWhwm2ScohWTTEwRzgz61aZPVTLTFHqE4WUyow"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
             }
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"]["engine"][k]["name"] = add_prefix(
@@ -150,12 +195,12 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
             ret["item"]["data"] = {
                 "type": "EffectData",
                 "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                "url": "https://cloudflare-ipfs.com/ipfs/QmS1G1ibXVtMq2H6mP7M3gvUXyMuWBd7G8ehDWnEwFCJjh"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
             }
             ret["item"]["audio"] = {
                 "type": "EffectAudio",
                 "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                "url": "https://cloudflare-ipfs.com/ipfs/QmbrQzojNWhwm2ScohWTTEwRzgz61aZPVTLTFHqE4WUyow"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
             }
     response = Response(
         json.dumps(ret),
@@ -231,24 +276,17 @@ def proxy2(testId: str, path: str) -> Response:
     return handle_general_endpoint(f"tests/{testId}/{path}", args)
 
 
-@app.route("/")
-def index() -> Response:
-    html = """
-<html>
-<head>
-<title>SweetPotato Server is working</title>
-<meta name="robots" content="noindex,nofollow,noarchive">
-</head>
-<body>
-<h1>SweetPotato Server is working</h1>
-<h1>SweetPotato サーバーは正常に動作しています</h1>
-<script>
-alert('SweetPotato Server is working. Please copy this page address and add as custom server to your sonolus client.')
-alert('SweetPotatoサーバーは正常に動作しています。このページのURLをコピーしてsonolusクライアントに追加してください。')
-</script>
-</body>
-</html>"""
-    return html
+@app.route('/')
+def send_index():
+    try:
+        return send_file('static/index.html')
+    except:
+        return "200 Server is working"
+
+
+@app.route('/<path:path>')
+def send_report(path):
+    return send_from_directory('static', path)
 
 
 if __name__ == "__main__":
