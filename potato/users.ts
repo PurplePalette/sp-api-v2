@@ -8,7 +8,7 @@ import {
 import type { Request } from 'express'
 import { sortByUpdatedTime } from './levels'
 import CustomUserInfo from '../types/user'
-import verifyUser from './auth'
+import { verifyUser } from './auth'
 import fs from 'fs'
 
 function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {

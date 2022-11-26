@@ -20,7 +20,27 @@ export async function verifyToken (idToken: string) : Promise<string> {
   return decodedToken.uid
 }
 
-export default function verifyUser (req: Request, res: Response, next: NextFunction) : void {
+export function verifyAdmin (req: Request, res: Response, next: NextFunction) : void {
+  if (!req.headers) {
+    throw new Error('Headers are missing')
+  }
+  if (!req.headers.authorization) {
+    throw new Error('Authorization header missing')
+  }
+  if (!req.headers.authorization.startsWith('Token ')) {
+    throw new Error('Authorization must be token')
+  }
+  const token = req.headers.authorization.split(' ')[1]
+  if (token != process.env.ADMIN_TOKEN) {
+    res.status(401).json({
+      error: new Error('Invalid request!')
+    })
+  } else {
+    next()
+  }
+}
+
+export function verifyUser (req: Request, res: Response, next: NextFunction) : void {
   try {
     if (!req.headers) {
       throw new Error('Headers are missing')

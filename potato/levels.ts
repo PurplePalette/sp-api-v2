@@ -4,7 +4,7 @@ import { Sonolus, LevelInfo, defaultListHandler } from 'sonolus-express'
 import { customAlphabet } from 'nanoid'
 import { initLevelInfo } from './reader'
 import { config } from '../config'
-import verifyUser from './auth'
+import { verifyUser, verifyAdmin } from './auth'
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = './config/loggingServiceAccount.json'
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12)
@@ -142,6 +142,22 @@ export function installLevelsEndpoints(sonolus: Sonolus): void {
     }
     fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(newLevel, null, '    '))
     const levelInfo = initLevelInfo(levelName)
+    sonolus.db.levels.push(levelInfo)
+    res.json({ message: 'ok' })
+  })
+
+  /* Hide level */
+  sonolus.app.patch('/levels/:levelName/hide', verifyAdmin, (req, res) => {
+    const levelName = req.params.levelName
+    const matchedLevel = sonolus.db.levels.filter(level => level.name === levelName)
+    if (matchedLevel.length === 0) {
+      res.status(404).json({ message: 'Level not found' })
+      return
+    }
+    const levelInfo = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as LevelInfo
+    levelInfo.public = false
+    fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(levelInfo, null, '    '))
+    sonolus.db.levels = sonolus.db.levels.filter(level => level.name !== levelName)
     sonolus.db.levels.push(levelInfo)
     res.json({ message: 'ok' })
   })

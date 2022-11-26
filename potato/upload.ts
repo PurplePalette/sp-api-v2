@@ -3,7 +3,7 @@ import multer from 'multer'
 import path from 'path'
 import { config } from '../config'
 import { customAlphabet } from 'nanoid'
-import verifyUser from './auth'
+import { verifyUser } from './auth'
 
 const nanoid = customAlphabet('123456789ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz', 20)
 
