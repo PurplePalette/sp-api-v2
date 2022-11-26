@@ -88,10 +88,11 @@ export function initLevelsDatabase(): LevelInfo[] {
       const level = loadLevelInfo(levelName)
       if (level) {
         levels.push(level)
-      } else {
-        const newLevel = initLevelInfo(levelName)
-        levels.push(newLevel)
       }
+      // } else {
+      //  const newLevel = initLevelInfo(levelName)
+      //  levels.push(newLevel)
+      // }
     } catch (e) {
       console.error('Error reading level info file for ' + levelName)
       console.error(e)
