@@ -13,6 +13,7 @@ db/source/particles/pjsekai.classic
 db/source/backgrounds/pjsekai.live
 db/source/effects/pjsekai.classic
 db/source/skins/pjsekai.classic
+db/pack-*
 !.gitkeep
 config
 dist
