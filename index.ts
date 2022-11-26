@@ -1,5 +1,4 @@
 import express from 'express'
-import * as OpenApiValidator from 'express-openapi-validator'
 import logger from 'morgan'
 import cors from 'cors'
 import { Sonolus } from 'sonolus-express'
@@ -36,13 +35,6 @@ app.use(express.json())
 app.use(express.text())
 app.use(express.urlencoded({ extended: false }))
 
-// Add validator
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: './api.yaml',
-    validateRequests: { removeAdditional: 'all' }
-  }),
-)
 app.use((
   err: { status?: number, errors?: string, message?: string },
   req: express.Request, res: express.Response, next: express.NextFunction
