@@ -11,9 +11,12 @@ import CustomUserInfo from '../types/user'
 import { verifyUser } from './auth'
 import fs from 'fs'
 
-function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
+function getUsersLevels(sonolus: Sonolus, req: Request): LevelInfo[] {
+  // @ts-ignore
   let matchedLevels = sonolus.db.levels.filter(level => level.userId === req.params.userId)
+  // @ts-ignore
   if (req.params.userId !== req.userId) {
+    // @ts-ignore
     matchedLevels = matchedLevels.filter(level => level.public === true)
   }
   if (matchedLevels.length === 0) {
@@ -25,6 +28,7 @@ function getUsersLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
 export function installUsersEndpoints(sonolus: Sonolus): void {
   // User server info
   sonolus.app.get('/users/:userId/info', (req, res) => {
+    // @ts-ignore
     req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
     const filteredLevels = sortByUpdatedTime(getUsersLevels(sonolus, req))
     if (filteredLevels.length === 0) { return res.status(404).json({message: 'No user found'})}
@@ -35,6 +39,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
           skins: [], backgrounds: [], effects: [], particles: [], engines: []
         },
         sonolus.db,
+        // @ts-ignore
         req.localize
       )
     )
@@ -43,13 +48,16 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   // Get user detail
   sonolus.app.get('/users/:userId', verifyUser, (req, res) => {
     const users = req.app.locals.users as CustomUserInfo[]
+    // @ts-ignore
     const matchedUser = users.filter(user => user.userId === req.params.userId)
     if (matchedUser.length === 0) {
       res.status(404).json({ message: 'User not found' })
       return
     }
     const resp = matchedUser[0]
+    // @ts-ignore
     if (req.params.userId != req.userId) {
+      // @ts-ignore
       resp.testId = 'hidden'
     }
     res.json(resp)
@@ -57,11 +65,13 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
 
   // Edit user detail
   sonolus.app.patch('/users/:userId', verifyUser, (req, res) => {
+    // @ts-ignore
     if (req.params.userId != req.userId) {
       return res.status(403).json({ message: 'Permission denied' })
     }
     let users = req.app.locals.users as CustomUserInfo[]
     const reqUser = req.body as unknown as CustomUserInfo
+    // @ts-ignore
     const matchedUser = users.filter(user => user.userId === req.params.userId)
     if (matchedUser.length === 0) {
       users.push(reqUser)
@@ -78,6 +88,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   // Get user detail
   sonolus.app.get('/users/:userId/levels/list', verifyUser, (req, res, next) => {
     (async () => {
+      // @ts-ignore
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       const userLevelListHandler = (
         sonolus: Sonolus,
@@ -101,6 +112,7 @@ export function installUsersEndpoints(sonolus: Sonolus): void {
   /* Get level */
   sonolus.app.get('/users/:userId/levels/:name', (req, res, next) => {
     (async () => {
+      // @ts-ignore
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       await detailsRouteHandler(sonolus, sonolus.levelDetailsHandler, toLevelItem, req, res)
     })().catch(next)

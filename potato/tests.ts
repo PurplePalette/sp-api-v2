@@ -15,6 +15,7 @@ function getTestingLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
   if (userIds.length === 0) {
     return []
   }
+  // @ts-ignore
   const filteredLevels = sonolus.db.levels.filter(l => l.userId === userIds[0].userId && l.public === false)
   return filteredLevels
 }
@@ -25,6 +26,7 @@ function getTestingLevels (sonolus: Sonolus, req: Request) : LevelInfo[] {
 export function installTestsEndpoints(sonolus: Sonolus): void {
   /* Server info */
   sonolus.app.get('/tests/:testId/info', (req, res) => {
+    // @ts-ignore
     req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
     const filteredLevels = sortByUpdatedTime(getTestingLevels(sonolus, req))
     if (filteredLevels.length === 0) { return res.status(404).json({message: 'No tests found'})}
@@ -35,6 +37,7 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
           skins: [], backgrounds: [], effects: [], particles: [], engines: []
         },
         sonolus.db,
+        // @ts-ignore
         req.localize
       )
     )
@@ -43,6 +46,7 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
   /* Level list */
   sonolus.app.get('/tests/:testId/levels/list', (req, res, next) => {
     (async () => {
+      // @ts-ignore
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       const testsLevelListHandler = (
         sonolus: Sonolus,
@@ -70,6 +74,7 @@ export function installTestsEndpoints(sonolus: Sonolus): void {
   /* Get level */
   sonolus.app.get('/tests/:testId/levels/:name', (req, res, next) => {
     (async () => {
+      // @ts-ignore
       req.localize = (text: LocalizationText) => sonolus.localize(text, req.query.localization as string)
       await detailsRouteHandler(sonolus, sonolus.levelDetailsHandler, toLevelItem, req, res)
     })().catch(next)

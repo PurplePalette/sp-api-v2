@@ -53,6 +53,7 @@ export function verifyUser (req: Request, res: Response, next: NextFunction) : v
     }
     const token = req.headers.authorization.split(' ')[1]
     verifyToken(token).then(userId => {
+      // @ts-ignore
       req.userId = userId
       next()
     }).catch(err => {

@@ -21,16 +21,19 @@ function injectLackedFields(levelData: LevelInfo, levelName: string) {
   levelData.name = levelName
   levelData.data = {
     type: 'LevelData',
+    // @ts-ignore
     hash: levelData.dataHash,
     url: `/repository/${levelName}/data.gz`
   }
   levelData.cover = {
     type: 'LevelCover',
+    // @ts-ignore
     hash: levelData.coverHash,
     url: `/repository/${levelName}/cover.png`
   }
   levelData.bgm = {
     type: 'LevelBgm',
+    // @ts-ignore
     hash: levelData.bgmHash,
     url: `/repository/${levelName}/bgm.mp3`
   }
@@ -43,6 +46,7 @@ function injectLackedFields(levelData: LevelInfo, levelName: string) {
 */
 function loadLevelInfo(levelName: string): LevelInfo | undefined {
   const levelData = JSON.parse(fs.readFileSync('./db/levels/' + levelName + '/info.json').toString()) as LevelInfo
+  // @ts-ignore
   if (levelData.userId && levelData.coverHash) {
     return injectLackedFields(levelData, levelName)
   } else {
@@ -65,8 +69,11 @@ export function initLevelInfo(levelName: string): LevelInfo {
   const levelDataHash = getHashFromFile(`./db/levels/${levelName}/data.gz`)
   const levelBgmHash = getHashFromFile(`./db/levels/${levelName}/bgm.mp3`)
   const levelCoverHash = getHashFromFile(`./db/levels/${levelName}/cover.png`)
+  // @ts-ignore
   levelInfo.dataHash = levelDataHash
+  // @ts-ignore
   levelInfo.bgmHash = levelBgmHash
+  // @ts-ignore
   levelInfo.coverHash = levelCoverHash
   fs.writeFileSync(`./db/levels/${levelName}/info.json`, JSON.stringify(levelInfo, null, '    '))
   return injectLackedFields(levelInfo, levelName)

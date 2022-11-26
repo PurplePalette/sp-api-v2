@@ -60,9 +60,13 @@ try {
 
 // Adjust sonolus-packed level to custom level
 for (let i = 0; i < potato.db.levels.length; i++) {
+  // @ts-ignore
   potato.db.levels[i].public = true
+  // @ts-ignore
   potato.db.levels[i].userId = 'admin'
+  // @ts-ignore
   potato.db.levels[i].createdTime = 1
+  // @ts-ignore
   potato.db.levels[i].updatedTime = 1
 }
 
