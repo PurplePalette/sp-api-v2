@@ -1,11 +1,19 @@
 from typing import Dict, List
-from flask import Flask, send_from_directory, send_file, make_response, redirect, request, Response
+from flask import (
+    Flask,
+    send_from_directory,
+    send_file,
+    make_response,
+    redirect,
+    request,
+    Response,
+)
 import requests
 import json
 
 app = Flask(__name__)
 ENDPOINT = "https://servers-legacy.purplepalette.net/"
-VERSION = "0.6.2"
+VERSION = "0.6.4"
 SERVER_PREFIX = "sweet-potato-"
 KEYWORD_OPTIONS = [
     {
@@ -24,7 +32,7 @@ def add_prefix(path: str) -> str:
 
 def remove_prefix(path: str) -> str:
     """パスからプレフィックスを除去する"""
-    return path.replace(SERVER_PREFIX, '') if SERVER_PREFIX in path else path
+    return path.replace(SERVER_PREFIX, "") if SERVER_PREFIX in path else path
 
 
 def filter_response_headers(resp: requests.Response) -> List[tuple]:
@@ -34,7 +42,7 @@ def filter_response_headers(resp: requests.Response) -> List[tuple]:
         "content-length",
         "transfer-encoding",
         "connection",
-        "sonolus-version"
+        "sonolus-version",
     ]
     headers = [
         (name, value)
@@ -63,36 +71,33 @@ def handle_info_endpoint(path: str, args: Dict[str, str]) -> Response:
                     ret_data["levels"][i]["engine"][k]["name"] = add_prefix(
                         ret_data["levels"][i]["engine"][k]["name"]
                     )
-                ret_data["levels"][i]["engine"]["version"] = 6
-                ret_data["levels"][i]["engine"]["effect"]["version"] = 3
+                ret_data["levels"][i]["engine"]["version"] = 7
+                ret_data["levels"][i]["engine"]["effect"]["version"] = 4
                 ret_data["levels"][i]["engine"]["effect"]["data"] = {
                     "type": "EffectData",
                     "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                    "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+                    "url": "https://cdn-etc.purplepalette.net/PatchEffectData",
                 }
                 ret_data["levels"][i]["engine"]["effect"]["audio"] = {
                     "type": "EffectAudio",
                     "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                    "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+                    "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio",
                 }
         elif "engines" in e:
             for i in range(len(ret_data["engines"])):
-                ret_data["engines"][i]["version"] = 6
+                ret_data["engines"][i]["version"] = 7
                 for k in ["background", "particle", "skin", "effect"]:
                     ret_data["engines"][i][k]["name"] = add_prefix(
                         ret_data["engines"][i][k]["name"]
                     )
         elif "effect" in e:
             for i in range(len(ret_data["effects"])):
-                ret_data["effects"][i]["version"] = 3
-        ret_data[e] = {
-            "items": ret_data[e],
-            "search": {"options": KEYWORD_OPTIONS}
-        }
+                ret_data["effects"][i]["version"] = 4
+        ret_data[e] = {"items": ret_data[e], "search": {"options": KEYWORD_OPTIONS}}
     ret_data["title"] = "Sweet Potato"
     ret_data["banner"] = {
         "type": "ServerBanner",
-        "url": "https://cdn-etc.purplepalette.net/sp-banner.png"
+        "url": "https://cdn-etc.purplepalette.net/sp-banner.png",
     }
     # 書き換えた応答データを作成
     ret = make_response(json.dumps(ret_data), resp.status_code)
@@ -116,26 +121,26 @@ def handle_list_endpoint(path: str, args: Dict[str, str]) -> Response:
                 ret_data["items"][i]["engine"][k]["name"] = add_prefix(
                     ret_data["items"][i]["engine"][k]["name"]
                 )
-            ret_data["items"][i]["engine"]["version"] = 6
-            ret_data["items"][i]["engine"]["effect"]["version"] = 3
+            ret_data["items"][i]["engine"]["version"] = 7
+            ret_data["items"][i]["engine"]["effect"]["version"] = 4
             ret_data["items"][i]["engine"]["effect"]["data"] = {
                 "type": "EffectData",
                 "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData",
             }
             ret_data["items"][i]["engine"]["effect"]["audio"] = {
                 "type": "EffectAudio",
                 "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio",
             }
         elif "engine" in path:
-            ret_data["items"][i]["version"] = 6
+            ret_data["items"][i]["version"] = 7
             for k in ["background", "particle", "skin", "effect"]:
                 ret_data["items"][i][k]["name"] = add_prefix(
                     ret_data["items"][i][k]["name"]
                 )
         elif "effect" in path:
-            ret_data["items"][i]["version"] = 3
+            ret_data["items"][i]["version"] = 4
     ret_data["search"] = {"options": KEYWORD_OPTIONS}
     # 書き換えた応答データを作成
     ret = make_response(ret_data, resp.status_code)
@@ -150,7 +155,8 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
         method=request.method,
         url=ENDPOINT + path,
         headers={
-            key: value for (key, value) in request.headers
+            key: value
+            for (key, value) in request.headers
             if key not in ["Host", "Accept-Encoding", "Accept-Language", "Accept"]
         },
         params=args,
@@ -164,48 +170,55 @@ def handle_general_endpoint(path: str, args: Dict[str, str]) -> Response:
     if "item" in ret:
         ret["item"]["name"] = add_prefix(ret["item"]["name"])
         if "level" in path:
-            ret["item"]["engine"]["version"] = 6
-            ret["item"]["engine"]["effect"]["version"] = 3
+            ret["item"]["engine"]["version"] = 7
+            ret["item"]["engine"]["effect"]["version"] = 4
             ret["item"]["engine"]["effect"]["data"] = {
                 "type": "EffectData",
                 "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData",
             }
             ret["item"]["engine"]["effect"]["audio"] = {
                 "type": "EffectAudio",
                 "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio",
             }
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"]["engine"][k]["name"] = add_prefix(
                     ret["item"]["engine"][k]["name"]
                 )
-                for d in ["thumbnail", "data", "configuration", "texture", "image", "audio"]:
+                for d in [
+                    "thumbnail",
+                    "data",
+                    "configuration",
+                    "texture",
+                    "image",
+                    "audio",
+                ]:
                     if d in ret["item"]["engine"][k].keys():
                         old = ret["item"]["engine"][k][d]["url"]
                         if "https://" in old:
                             continue
-                        ret["item"]["engine"][k][d]["url"] = f"https://servers.purplepalette.net{old}"
+                        ret["item"]["engine"][k][d][
+                            "url"
+                        ] = f"https://servers.purplepalette.net{old}"
         elif "engine" in path:
             for k in ["background", "particle", "skin", "effect"]:
                 ret["item"][k]["name"] = add_prefix(ret["item"][k]["name"])
-            ret["item"]["version"] = 6
+            ret["item"]["version"] = 7
         elif "effect" in path:
-            ret["item"]["version"] = 3
+            ret["item"]["version"] = 4
             ret["item"]["data"] = {
                 "type": "EffectData",
                 "hash": "4A544E7B2739F1E1783C26E0AF618DDFF29276E2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectData"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectData",
             }
             ret["item"]["audio"] = {
                 "type": "EffectAudio",
                 "hash": "78B49410C517C02B30FBDF7CF821C886F7A7B5B2",
-                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio"
+                "url": "https://cdn-etc.purplepalette.net/PatchEffectAudio",
             }
     response = Response(
-        json.dumps(ret),
-        resp.status_code,
-        filter_response_headers(resp)
+        json.dumps(ret), resp.status_code, filter_response_headers(resp)
     )
     return response
 
@@ -215,19 +228,12 @@ def repository_proxy2(testId: str, path: str) -> Response:
     resp = requests.request(
         method=request.method,
         url=ENDPOINT + "repository/" + path,
-        headers={
-            key: value for (key, value) in request.headers
-            if key != "Host"
-        },
+        headers={key: value for (key, value) in request.headers if key != "Host"},
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False,
     )
-    response = Response(
-        resp.content,
-        resp.status_code,
-        filter_response_headers(resp)
-    )
+    response = Response(resp.content, resp.status_code, filter_response_headers(resp))
     return response
 
 
@@ -236,19 +242,12 @@ def repository_proxy(path: str) -> Response:
     resp = requests.request(
         method=request.method,
         url=ENDPOINT + "repository/" + path,
-        headers={
-            key: value for (key, value) in request.headers
-            if key != "Host"
-        },
+        headers={key: value for (key, value) in request.headers if key != "Host"},
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False,
     )
-    response = Response(
-        resp.content,
-        resp.status_code,
-        filter_response_headers(resp)
-    )
+    response = Response(resp.content, resp.status_code, filter_response_headers(resp))
     return response
 
 
@@ -276,19 +275,19 @@ def proxy2(testId: str, path: str) -> Response:
     return handle_general_endpoint(f"tests/{testId}/{path}", args)
 
 
-@app.route('/')
+@app.route("/")
 def send_index():
-    return send_file('static/index.html')
+    return send_file("static/index.html")
 
 
-@app.route('/assets/<path:path>')
+@app.route("/assets/<path:path>")
 def send_asset(path):
-    return send_from_directory('static/assets', path)
+    return send_from_directory("static/assets", path)
 
 
-@app.route('/<path:path>')
+@app.route("/<path:path>")
 def send_index2(path):
-    return send_file('static/index.html')
+    return send_file("static/index.html")
 
 
 if __name__ == "__main__":
